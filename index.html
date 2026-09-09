@@ -83,7 +83,6 @@
             font-family: 'Montserrat', sans-serif;
             font-size: 12px;
         }
-
         .presenter-list {
             flex: 1;
             overflow-y: auto;
@@ -103,7 +102,7 @@
         }
         .p-id { font-size: 10px; color: #64748b; font-weight: bold; }
         .p-name { font-weight: 600; font-size: 14px; color: var(--primary); }
-        .p-affil { font-size: 11px; color: #64748b; margin-top: 4px; }
+        .p-affil { font-size: 11px; color: #64748b; margin-top: 4px; line-height: 1.3; }
 
         .preview-area {
             flex: 1;
@@ -117,6 +116,7 @@
 
         .certificate-wrapper {
             background: white;
+            /* Fixed dimensions representing A4 Landscape at 96dpi (1123 x 794) */
             width: 1123px;
             height: 794px;
             position: relative;
@@ -128,29 +128,21 @@
         .border-outer {
             position: absolute;
             top: 15px; left: 15px; right: 15px; bottom: 15px;
-            border: 8px solid var(--primary);
+            border: 4px solid var(--primary);
+            border-radius: 20px;
         }
         .border-inner-1 {
             position: absolute;
-            top: 6px; left: 6px; right: 6px; bottom: 6px;
+            top: 8px; left: 8px; right: 8px; bottom: 8px;
             border: 2px solid var(--secondary);
+            border-radius: 14px;
         }
         .border-inner-2 {
             position: absolute;
-            top: 10px; left: 10px; right: 10px; bottom: 10px;
-            border: 1px solid var(--secondary);
+            top: 8px; left: 8px; right: 8px; bottom: 8px;
+            border: 1px dashed var(--secondary);
+            border-radius: 8px;
         }
-        .corner {
-            position: absolute;
-            width: 30px; height: 30px;
-            border: 4px solid var(--secondary);
-            background: white;
-            z-index: 5;
-        }
-        .corner-tl { top: -4px; left: -4px; border-right: none; border-bottom: none; }
-        .corner-tr { top: -4px; right: -4px; border-left: none; border-bottom: none; }
-        .corner-bl { bottom: -4px; left: -4px; border-right: none; border-top: none; }
-        .corner-br { bottom: -4px; right: -4px; border-left: none; border-top: none; }
 
         .bg-graphics {
             position: absolute;
@@ -158,7 +150,7 @@
             overflow: hidden;
             pointer-events: none;
             z-index: 1;
-            opacity: 0.35;
+            border-radius: 15px;
         }
         
         .certificate-content {
@@ -173,7 +165,7 @@
         .ref-number {
             position: absolute;
             top: 15px;
-            left: 55px;
+            left: 55px; 
             font-size: 12px;
             font-weight: 700;
             color: var(--primary);
@@ -239,6 +231,8 @@
             font-size: 16px;
             color: var(--text-main);
             margin-bottom: 15px;
+            padding: 0 80px;
+            line-height: 1.4;
         }
 
         .for-presenting {
@@ -249,18 +243,10 @@
         }
 
         .paper-title {
-            font-size: 24px; /* Increased slightly for short roles */
+            font-size: 24px;
             font-weight: 700;
-            color: var(--text-main);
-            line-height: 1.4;
-            min-height: 56px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            color: var(--primary);
             margin-bottom: 15px;
-            padding: 0 40px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         .conf-details {
@@ -291,7 +277,7 @@
             padding-top: 5px;
         }
         .sig-name {
-            font-size: 14px; /* Scaled up as requested in last change */
+            font-size: 14px;
             font-weight: 700;
             color: var(--text-main);
         }
@@ -358,11 +344,11 @@
         </div>
 
         <div class="add-form">
-            <strong style="font-size: 12px; display: block; margin-bottom: 8px;">+ Add Resource Person</strong>
-            <input type="text" id="newId" placeholder="SL No (e.g. 25)">
-            <input type="text" id="newName" placeholder="Person Name">
-            <input type="text" id="newAffil" placeholder="Designation / Affiliation">
-            <input type="text" id="newRole" placeholder="Role (e.g. Keynote Speaker)">
+            <strong style="font-size: 12px; display: block; margin-bottom: 8px;">+ Add Resource Person Manually</strong>
+            <input type="text" id="newId" placeholder="SL No. (e.g. 25)">
+            <input type="text" id="newName" placeholder="Name">
+            <input type="text" id="newRole" placeholder="Role (e.g. Session Chair)">
+            <input type="text" id="newAffil" placeholder="Designation & Affiliation">
             <button class="btn btn-success" style="margin-bottom:0; padding: 8px;" onclick="addPresenter()">Add to List</button>
         </div>
 
@@ -373,48 +359,91 @@
 
     <div class="preview-area">
         <div class="certificate-wrapper" id="certificateNode">
+            <!-- Curvy Borders -->
             <div class="border-outer">
                 <div class="border-inner-1">
-                    <div class="corner corner-tl"></div>
-                    <div class="corner corner-tr"></div>
-                    <div class="corner corner-bl"></div>
-                    <div class="corner corner-br"></div>
                     <div class="border-inner-2"></div>
                 </div>
             </div>
 
+            <!-- Highly Detailed Guilloche & Tech Background -->
             <div class="bg-graphics">
                 <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                    <g stroke="#0a2351" stroke-width="1.5" fill="none">
-                        <path d="M-50,200 L150,200 L250,300 L200,450 L350,550 L300,700" />
-                        <circle cx="150" cy="200" r="4" fill="#c09d5c"/>
-                        <circle cx="250" cy="300" r="4" fill="#c09d5c"/>
-                        <circle cx="200" cy="450" r="4" fill="#c09d5c"/>
-                        <circle cx="350" cy="550" r="4" fill="#c09d5c"/>
-                        <path d="M150,200 L200,100" />
-                        <path d="M250,300 L400,250" />
+                    <!-- Corner Flourishes -->
+                    <g stroke="#0a2351" stroke-width="2" fill="none" opacity="0.8">
+                        <path d="M5,45 C5,15 15,5 45,5 C25,5 5,25 5,45 Z" fill="#c09d5c" stroke="none" />
+                        <path d="M15,55 C15,25 25,15 55,15" />
+                        <circle cx="10" cy="10" r="3" fill="#0a2351" />
+
+                        <path d="M1078,45 C1078,15 1068,5 1038,5 C1058,5 1078,25 1078,45 Z" fill="#c09d5c" stroke="none" />
+                        <path d="M1068,55 C1068,25 1058,15 1028,15" />
+                        <circle cx="1073" cy="10" r="3" fill="#0a2351" />
+
+                        <path d="M5,709 C5,739 15,749 45,749 C25,749 5,729 5,709 Z" fill="#c09d5c" stroke="none" />
+                        <path d="M15,699 C15,729 25,739 55,739" />
+                        <circle cx="10" cy="744" r="3" fill="#0a2351" />
+
+                        <path d="M1078,709 C1078,739 1068,749 1038,749 C1058,749 1078,729 1078,709 Z" fill="#c09d5c" stroke="none" />
+                        <path d="M1068,699 C1068,729 1058,739 1028,739" />
+                        <circle cx="1073" cy="744" r="3" fill="#0a2351" />
+                    </g>
+
+                    <!-- Central Classic Guilloche Pattern -->
+                    <g transform="translate(541.5, 377)" opacity="0.07" stroke="#0a2351" stroke-width="1.2" fill="none">
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(0)" />
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(15)" />
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(30)" />
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(45)" />
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(60)" />
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(75)" />
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(90)" />
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(105)" />
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(120)" />
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(135)" />
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(150)" />
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(165)" />
+                    </g>
+                    
+                    <g transform="translate(541.5, 377)" opacity="0.12" stroke="#c09d5c" stroke-width="1.5" fill="none">
+                        <ellipse cx="0" cy="0" rx="160" ry="280" transform="rotate(0)" />
+                        <ellipse cx="0" cy="0" rx="160" ry="280" transform="rotate(22.5)" />
+                        <ellipse cx="0" cy="0" rx="160" ry="280" transform="rotate(45)" />
+                        <ellipse cx="0" cy="0" rx="160" ry="280" transform="rotate(67.5)" />
+                        <ellipse cx="0" cy="0" rx="160" ry="280" transform="rotate(90)" />
+                        <ellipse cx="0" cy="0" rx="160" ry="280" transform="rotate(112.5)" />
+                        <ellipse cx="0" cy="0" rx="160" ry="280" transform="rotate(135)" />
+                        <ellipse cx="0" cy="0" rx="160" ry="280" transform="rotate(157.5)" />
+                    </g>
+
+                    <!-- Tech Nodes -->
+                    <g opacity="0.25">
+                        <path d="M -50 377 L 100 377 M 983 377 L 1133 377" stroke="#0a2351" stroke-width="2" stroke-dasharray="5,5" />
                         
-                        <circle cx="950" cy="400" r="250" stroke-dasharray="10,10" stroke-width="1" />
-                        <circle cx="950" cy="400" r="150" stroke-width="0.5" />
-                        <path d="M700,400 L1200,400" stroke-width="0.5" />
-                        <path d="M950,150 L950,650" stroke-width="0.5" />
-                        <path d="M773,223 L1127,577" stroke-width="0.5" />
-                        <path d="M773,577 L1127,223" stroke-width="0.5" />
-                        <polygon points="950,395 955,405 945,405" fill="#0a2351"/>
-                        
-                        <polygon points="350,650 365,658 365,675 350,683 335,675 335,658" stroke="#c09d5c" stroke-width="1.5"/>
-                        <circle cx="350" cy="666.5" r="2" fill="#0a2351"/>
-                        
-                        <polygon points="800,250 815,258 815,275 800,283 785,275 785,258" stroke="#c09d5c" stroke-width="1.5"/>
-                        <circle cx="800" cy="266.5" r="2" fill="#0a2351"/>
+                        <g transform="translate(100, 377)" stroke="#c09d5c" stroke-width="2" fill="none">
+                            <polygon points="0,-40 35,-20 35,20 0,40 -35,20 -35,-20" />
+                            <circle cx="0" cy="0" r="10" fill="#0a2351" />
+                            <line x1="35" y1="-20" x2="80" y2="-50" />
+                            <line x1="35" y1="20" x2="80" y2="50" />
+                            <circle cx="80" cy="-50" r="3" fill="#c09d5c" />
+                            <circle cx="80" cy="50" r="3" fill="#c09d5c" />
+                        </g>
+
+                        <g transform="translate(983, 377)" stroke="#c09d5c" stroke-width="2" fill="none">
+                            <polygon points="0,-40 35,-20 35,20 0,40 -35,20 -35,-20" />
+                            <circle cx="0" cy="0" r="10" fill="#0a2351" />
+                            <line x1="-35" y1="-20" x2="-80" y2="-50" />
+                            <line x1="-35" y1="20" x2="-80" y2="50" />
+                            <circle cx="-80" cy="-50" r="3" fill="#c09d5c" />
+                            <circle cx="-80" cy="50" r="3" fill="#c09d5c" />
+                        </g>
                     </g>
                 </svg>
             </div>
 
             <div class="certificate-content">
-                <div class="ref-number" id="certRef">Ref : CICBA-2026/Appreciation - 1</div>
+                <div class="ref-number" id="certRef">Ref : CICBA-2026/AP - 1</div>
                 
-                <div class="logos">
+                <div class="logos" id="logoContainer">
                     <img src="clogo.png" alt="CICBA">
                     <img src="ulogo.png" alt="UGB">
                     <img src="slogo.png" alt="Springer">
@@ -429,16 +458,16 @@
                     <div class="presented-to">Presented to</div>
                     <div class="name" id="certName">Prof. Bimal Kumar Roy</div>
                     
-                    <div class="affiliation">
-                        <span id="certAffil" class="affil-text">Padma Shri Awardee and Former Director, Indian Statistical Institute, Kolkata, India.</span>
+                    <div class="affiliation" id="certAffil">
+                        Padma Shri Awardee and Former Director, Indian Statistical Institute, Kolkata, India.
                     </div>
 
                     <div class="for-presenting">for his/her valuable contribution as a</div>
                     
-                    <div class="paper-title" id="certTitle">Chief Guest</div>
+                    <div class="paper-title" id="certRole">Chief Guest</div>
                     
                     <div class="conf-details">
-                        at the CICBA-2026, held during September 10-12, 2026, organized by the Department of Computer Science, University of Gour Banga, Malda, West Bengal, India.
+                        at the CICBA-2026 , held during September 10-12, 2026, organized by the Department of Computer Science, University of Gour Banga, Malda, West Bengal, India.
                     </div>
                 </div>
 
@@ -449,6 +478,7 @@
         </div>
     </div>
 
+    <!-- Hidden container used for generating the multi-page PDF -->
     <div id="bulkPrintContainer"></div>
 
     <script>
@@ -460,8 +490,8 @@
             setTimeout(() => mbox.remove(), 4000);
         }
 
-        // Complete 24 Resource Persons Data
-        let attendees = [
+        // Full Resource Persons Data
+        let persons = [
             { id: "1", name: "Prof. Bimal Kumar Roy", role: "Chief Guest", affil: "Padma Shri Awardee and Former Director, Indian Statistical Institute, Kolkata, India." },
             { id: "2", name: "Prof. Sushmita Mitra", role: "Keynote Speaker", affil: "Full Professor (HAG), Machine Intelligence Unit, Indian Statistical Institute, Kolkata, India." },
             { id: "3", name: "Prof. Wei-Chang Yeh", role: "Keynote Speaker", affil: "University Distinguished Professor, National Tsing-Hua University, Hsinchu, Taiwan." },
@@ -500,12 +530,12 @@
         function loadList() {
             const list = document.getElementById('presenterList');
             list.innerHTML = '';
-            attendees.forEach((p, index) => {
+            persons.forEach((p, index) => {
                 const div = document.createElement('div');
                 div.className = `presenter-item ${index === currentIndex ? 'active' : ''}`;
                 div.onclick = () => renderCertificate(index);
                 div.innerHTML = `
-                    <div class="p-id">SL No: ${p.id}</div>
+                    <div class="p-id">SL: ${p.id}</div>
                     <div class="p-name">${p.name}</div>
                     <div class="p-affil">${p.role}</div>
                 `;
@@ -515,13 +545,12 @@
 
         function renderCertificate(index) {
             currentIndex = index;
-            const p = attendees[index];
+            const p = persons[index];
             
-            document.getElementById('certRef').innerText = `Ref : CICBA-2026/Appreciation - ${p.id}`;
+            document.getElementById('certRef').innerText = `Ref : CICBA-2026/AP - ${p.id}`;
             document.getElementById('certName').innerText = p.name;
             document.getElementById('certAffil').innerText = p.affil;
-            // Dropped the quotes since roles like Chief Guest shouldn't have quotes
-            document.getElementById('certTitle').innerText = p.role;
+            document.getElementById('certRole').innerText = p.role;
 
             loadList();
         }
@@ -548,7 +577,7 @@
 
         function updateLogoGap() {
             const gapValue = document.getElementById('logoGapSlider').value;
-            document.querySelector('.logos').style.gap = gapValue + 'px';
+            document.getElementById('logoContainer').style.gap = gapValue + 'px';
             document.getElementById('logoGapValue').innerText = gapValue + 'px';
         }
 
@@ -559,11 +588,11 @@
             const role = document.getElementById('newRole').value.trim();
             
             if(!id || !name || !affil || !role) {
-                showMessage("Please fill in all fields.");
+                showMessage("Please fill in all fields (including SL No).");
                 return;
             }
             
-            attendees.unshift({ id, name, affil, role: role });
+            persons.unshift({ id, name, affil, role });
             
             document.getElementById('newId').value = '';
             document.getElementById('newName').value = '';
@@ -575,22 +604,26 @@
         }
 
         function startBulkPrint() {
-            showMessage(" ");
+            showMessage("Preparing all certificates for print...");
             
             const bulkContainer = document.getElementById('bulkPrintContainer');
             bulkContainer.innerHTML = ''; 
             
-            for(let i = 0; i < attendees.length; i++) {
-                const p = attendees[i];
+            for(let i = 0; i < persons.length; i++) {
+                const p = persons[i];
                 const clone = document.getElementById('certificateNode').cloneNode(true);
                 
                 clone.id = ''; 
                 clone.className = 'certificate-wrapper bulk-cert';
                 
-                clone.querySelector('.ref-number').innerText = `Ref : CICBA-2026/Appreciation - ${p.id}`;
+                clone.querySelector('.ref-number').innerText = `Ref : CICBA-2026/AP - ${p.id}`;
                 clone.querySelector('.name').innerText = p.name;
                 clone.querySelector('.paper-title').innerText = p.role;
-                clone.querySelector('.affil-text').innerText = p.affil;
+                clone.querySelector('.affiliation').innerText = p.affil;
+                
+                // Carry over the current logo gap to the printed clones
+                const currentGap = document.getElementById('logoContainer').style.gap || '55px';
+                clone.querySelector('.logos').style.gap = currentGap;
                 
                 bulkContainer.appendChild(clone);
             }
@@ -601,7 +634,7 @@
             }, 1000);
         }
 
-        // Init
+        // Initialization
         updateSignatures();
         loadList();
         renderCertificate(0);
