@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CICBA 2026 Certificate Generator</title>
+    <title>CICBA 2026 Appreciation Generator</title>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -20,7 +20,6 @@
             height: 100vh;
             overflow: hidden;
         }
-        
         /* Sidebar Styles */
         .sidebar {
             width: 350px;
@@ -84,6 +83,7 @@
             font-family: 'Montserrat', sans-serif;
             font-size: 12px;
         }
+
         .presenter-list {
             flex: 1;
             overflow-y: auto;
@@ -105,7 +105,6 @@
         .p-name { font-weight: 600; font-size: 14px; color: var(--primary); }
         .p-affil { font-size: 11px; color: #64748b; margin-top: 4px; }
 
-        /* Certificate Preview Area */
         .preview-area {
             flex: 1;
             display: flex;
@@ -116,20 +115,16 @@
             padding: 20px;
         }
 
-        /* Certificate Fixed Canvas */
         .certificate-wrapper {
             background: white;
-            /* Fixed dimensions representing A4 Landscape at 96dpi (1123 x 794) */
             width: 1123px;
             height: 794px;
             position: relative;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            /* Scaling for screen preview */
             transform-origin: center center;
             transform: scale(0.85);
         }
 
-        /* Border System */
         .border-outer {
             position: absolute;
             top: 15px; left: 15px; right: 15px; bottom: 15px;
@@ -157,7 +152,6 @@
         .corner-bl { bottom: -4px; left: -4px; border-right: none; border-top: none; }
         .corner-br { bottom: -4px; right: -4px; border-left: none; border-top: none; }
 
-        /* Background Graphics */
         .bg-graphics {
             position: absolute;
             top: 20px; left: 20px; right: 20px; bottom: 20px;
@@ -167,7 +161,6 @@
             opacity: 0.35;
         }
         
-        /* Certificate Content Container */
         .certificate-content {
             position: absolute;
             top: 25px; left: 25px; right: 25px; bottom: 25px;
@@ -180,17 +173,16 @@
         .ref-number {
             position: absolute;
             top: 15px;
-            left: 55px; /* Shifted to right to prevent cutoff */
+            left: 55px;
             font-size: 12px;
             font-weight: 700;
             color: var(--primary);
         }
 
-        /* Top Logos */
         .logos {
             display: flex;
             justify-content: center;
-            gap: 55px; /* Interactive spacing */
+            gap: 55px; 
             margin-top: 30px;
             height: 70px;
         }
@@ -199,7 +191,6 @@
             object-fit: contain;
         }
 
-        /* Text Block Area (Fixed structure) */
         .text-block {
             text-align: center;
             padding: 0 80px;
@@ -224,7 +215,7 @@
 
         .cert-title {
             font-family: 'Great Vibes', cursive;
-            font-size: 50px;
+            font-size: 50px; 
             color: var(--primary);
             margin: 5px 0 15px 0;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
@@ -249,11 +240,6 @@
             color: var(--text-main);
             margin-bottom: 15px;
         }
-        .affiliation .of {
-            font-style: italic;
-            display: block;
-            margin-bottom: 2px;
-        }
 
         .for-presenting {
             font-size: 16px;
@@ -262,9 +248,8 @@
             margin-bottom: 10px;
         }
 
-        /* Fixed height for Paper Title to accommodate 2 lines gracefully */
         .paper-title {
-            font-size: 20px;
+            font-size: 24px; /* Increased slightly for short roles */
             font-weight: 700;
             color: var(--text-main);
             line-height: 1.4;
@@ -274,16 +259,17 @@
             justify-content: center;
             margin-bottom: 15px;
             padding: 0 40px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .conf-details {
-            font-size: 16px; /* Slightly increased for readability */
+            font-size: 15px;
             line-height: 1.5;
             color: #444;
             padding: 0 60px;
         }
 
-        /* Signature Block (Absolutely Positioned) */
         .signature-block {
             position: absolute;
             bottom: 30px;
@@ -305,34 +291,27 @@
             padding-top: 5px;
         }
         .sig-name {
-            font-size: 14px; /* Increased from 11px to 14px as requested */
+            font-size: 14px; /* Scaled up as requested in last change */
             font-weight: 700;
             color: var(--text-main);
         }
         .sig-title {
-            font-size: 11px; /* Slightly increased to match name proportion */
+            font-size: 11px;
             color: #444;
         }
 
-        /* Bulk Print Container */
         #bulkPrintContainer {
             display: none;
         }
 
-        /* Print Media Query */
         @media print {
             @page { size: A4 landscape; margin: 0; }
             body { 
-                /* Forces background graphics to print */
                 -webkit-print-color-adjust: exact !important; 
                 print-color-adjust: exact !important;
                 margin: 0; 
             }
-            
-            /* Hide the screen UI when printing */
             .sidebar, .preview-area { display: none !important; }
-            
-            /* Show the multi-page bulk container */
             #bulkPrintContainer { display: block !important; }
             
             .bulk-cert {
@@ -357,11 +336,10 @@
 
     <div class="sidebar">
         <div class="header">
-            <h3>CICBA 2026<br><span style="font-size: 14px; font-weight: normal;">Certificate Generator</span></h3>
+            <h3>CICBA 2026<br><span style="font-size: 14px; font-weight: normal;">Appreciation Generator</span></h3>
         </div>
         
         <div class="controls">
-            <!-- Removed the single print button as requested -->
             <button class="btn btn-success" onclick="startBulkPrint()">Print All to PDF</button>
             
             <div class="chair-selection" style="margin-bottom: 12px; border-bottom: 1px solid #ddd; padding-bottom: 12px;">
@@ -380,11 +358,11 @@
         </div>
 
         <div class="add-form">
-            <strong style="font-size: 12px; display: block; margin-bottom: 8px;">+ Add Presenter Manually</strong>
-            <input type="text" id="newId" placeholder="Paper ID (e.g. 999)">
-            <input type="text" id="newName" placeholder="Presenter Name">
-            <input type="text" id="newAffil" placeholder="Institution / Affiliation">
-            <input type="text" id="newTitle" placeholder="Paper Title">
+            <strong style="font-size: 12px; display: block; margin-bottom: 8px;">+ Add Resource Person</strong>
+            <input type="text" id="newId" placeholder="SL No (e.g. 25)">
+            <input type="text" id="newName" placeholder="Person Name">
+            <input type="text" id="newAffil" placeholder="Designation / Affiliation">
+            <input type="text" id="newRole" placeholder="Role (e.g. Keynote Speaker)">
             <button class="btn btn-success" style="margin-bottom:0; padding: 8px;" onclick="addPresenter()">Add to List</button>
         </div>
 
@@ -395,7 +373,6 @@
 
     <div class="preview-area">
         <div class="certificate-wrapper" id="certificateNode">
-            <!-- Borders -->
             <div class="border-outer">
                 <div class="border-inner-1">
                     <div class="corner corner-tl"></div>
@@ -406,11 +383,9 @@
                 </div>
             </div>
 
-            <!-- Background Tech Graphics -->
             <div class="bg-graphics">
                 <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
                     <g stroke="#0a2351" stroke-width="1.5" fill="none">
-                        <!-- Left Node Network -->
                         <path d="M-50,200 L150,200 L250,300 L200,450 L350,550 L300,700" />
                         <circle cx="150" cy="200" r="4" fill="#c09d5c"/>
                         <circle cx="250" cy="300" r="4" fill="#c09d5c"/>
@@ -419,7 +394,6 @@
                         <path d="M150,200 L200,100" />
                         <path d="M250,300 L400,250" />
                         
-                        <!-- Right Radar/Globe -->
                         <circle cx="950" cy="400" r="250" stroke-dasharray="10,10" stroke-width="1" />
                         <circle cx="950" cy="400" r="150" stroke-width="0.5" />
                         <path d="M700,400 L1200,400" stroke-width="0.5" />
@@ -428,7 +402,6 @@
                         <path d="M773,577 L1127,223" stroke-width="0.5" />
                         <polygon points="950,395 955,405 945,405" fill="#0a2351"/>
                         
-                        <!-- Scattered Hexagons -->
                         <polygon points="350,650 365,658 365,675 350,683 335,675 335,658" stroke="#c09d5c" stroke-width="1.5"/>
                         <circle cx="350" cy="666.5" r="2" fill="#0a2351"/>
                         
@@ -438,9 +411,8 @@
                 </svg>
             </div>
 
-            <!-- Content Area -->
             <div class="certificate-content">
-                <div class="ref-number" id="certRef">Ref : CICBA-2026/Paper ID - 80</div>
+                <div class="ref-number" id="certRef">Ref : CICBA-2026/Appreciation - 1</div>
                 
                 <div class="logos">
                     <img src="clogo.png" alt="CICBA">
@@ -452,27 +424,24 @@
                 <div class="text-block">
                     <div class="conf-title">8th International Conference on Computational Intelligence in Communications and Business Analytics (CICBA-2026)</div>
                     <div class="conf-date">10-12 September 2026</div>
-                    <div class="cert-title">Certificate of Presentation</div>
+                    <div class="cert-title">Letter of Appreciation</div>
                     
                     <div class="presented-to">Presented to</div>
-                    <div class="name" id="certName">Garvit Kumar Mittal</div>
+                    <div class="name" id="certName">Prof. Bimal Kumar Roy</div>
                     
                     <div class="affiliation">
-                        <span class="of" id="certOf">of</span>
-                        <span id="certAffil" class="affil-text">Central Research Laboratory (CRL), Bharat Electronics Limited (BEL)</span>
+                        <span id="certAffil" class="affil-text">Padma Shri Awardee and Former Director, Indian Statistical Institute, Kolkata, India.</span>
                     </div>
 
-                    <div class="for-presenting">for presenting the paper titled</div>
+                    <div class="for-presenting">for his/her valuable contribution as a</div>
                     
-                    <div class="paper-title" id="certTitle">"Quantum Edge and Corner Detection: A Multidimensional Analytical Perspective"</div>
+                    <div class="paper-title" id="certTitle">Chief Guest</div>
                     
-                    <!-- Updated Conference Details Footer here -->
                     <div class="conf-details">
                         at the CICBA-2026, held during September 10-12, 2026, organized by the Department of Computer Science, University of Gour Banga, Malda, West Bengal, India.
                     </div>
                 </div>
 
-                <!-- Absolutely Positioned Signatures -->
                 <div class="signature-block" id="signatureContainer">
                     <!-- Injected via JS -->
                 </div>
@@ -480,11 +449,9 @@
         </div>
     </div>
 
-    <!-- Hidden container used for generating the multi-page PDF -->
     <div id="bulkPrintContainer"></div>
 
     <script>
-        // Custom message box to replace browser alerts
         function showMessage(msg) {
             const mbox = document.createElement('div');
             mbox.style.cssText = "position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#0a2351;color:#fff;padding:15px 25px;border-radius:8px;z-index:9999;font-family:sans-serif;box-shadow:0 4px 12px rgba(0,0,0,0.2);";
@@ -493,67 +460,32 @@
             setTimeout(() => mbox.remove(), 4000);
         }
 
-        // FULL Presenter Data (59 Presenters)
-        let presenters = [
-            { id: "80", name: "Garvit Kumar Mittal", affil: "Central Research Laboratory (CRL), Bharat Electronics Limited (BEL)", title: "Quantum Edge and Corner Detection: A Multidimensional Analytical Perspective" },
-            { id: "134", name: "Jeet Bandyopadhyay", affil: "Institute of Engineering & Management", title: "ACARA: An Adaptive Context-Aware Retrieval Architecture for Scalable Retrieval-Augmented Decision Systems" },
-            { id: "136", name: "Mr. Gaurav Pradhan", affil: "Sikkim Manipal Institute of Technology", title: "An Intelligent Data Analytics Framework Based on Dynamic Loss-Based Weighted Ensemble Deep Learning for Al-Assisted Clinical Decision Support in Oral Cancer Detection" },
-            { id: "169", name: "Subhajit Bose", affil: "Salesian College (Autonomous)", title: "An Intelligent Decision Framework for Competitive Influence-Based Fake News Containment in Social Networks" },
-            { id: "171", name: "AVIPSA BANERJEE", affil: "University of North Bengal", title: "Prescriptive sample preparation with reactant optimization for digital microfluidic biochips." },
-            { id: "176", name: "Subrata Mokami", affil: "Kalyani Government Engineering College", title: "AI-Driven Predictive Analytics for PPG Signal Reconstruction: A Variational Autoencoder Framework for Intelligent Health Decision Support" },
-            { id: "186", name: "Procheta Poddar", affil: "Independent Researcher", title: "Machine Learning-Based Decision Support for Postnatal Anxiety Screening" },
-            { id: "16", name: "Pratyush Ghosh", affil: "JIS College of Engineering (Autonomous)", title: "Quantum Nanostructures for II-VI ternary and III-V quaternary alloy semiconductor Optoelectronics and Optical Communication" },
-            { id: "194", name: "Sirjon Murmu", affil: "Kalyani Government Engineering College", title: "SaKAM: Federated Brain Tumour Classification for Edge Intelligence with Dynamic Density Reweighting and Domain-Adversarial Vision Transformers under Non-IID Covariate Shift" },
-            { id: "225", name: "Surya Kanta Nag", affil: "Kalyani Government Engineering College", title: "Al-Driven Real-Time Predictive Resource Allocation for Optimal Performance in Multi-Tenant Container Environments: An Ensemble LSTM and Random Forest Approach" },
-            { id: "226", name: "Prachi Das", affil: "Kalyani Government Engineering College", title: "An Al-Driven Intelligent Cyber Physical System For Flood Disaster Recovery In Real-Time" },
-            { id: "236", name: "Ujjal Kumar Das", affil: "Srikrishna College & IIEST, Shibpur", title: "Machine Learning-Based Security Evaluation of Lightweight Block Ciphers: A Comparative Analysis of PRESENT, SPECK, and SIMON" },
-            { id: "241", name: "Anil Tudu", affil: "University of North Bengal", title: "Community-based Node Importance and Adaptive Overlapping Influence Avoidance Technique for Solving Influence Maximization Problem" },
-            { id: "247", name: "Ranit Saha", affil: "Techno India University", title: "Towards Blockchain-Enabled Secure and Transparent Traffic e-Challan Law Enforcement" },
-            { id: "146", name: "Ruchira Patil", affil: "St. Vincent Pallotti College of Engineering and Technology", title: "BLE Beacon-Based Indoor Room Identification System with Audio Feedback for Visually Impaired People in Educational Institutions" },
-            { id: "153", name: "Asmita", affil: "GLA University", title: "Cross-Modal Transformers for Brain Tumor Detection: Combining Radiological and Clinical Intelligence" },
-            { id: "201", name: "Sarbojit Bhattacharya", affil: "Netaji Subhash Engineering College", title: "MBMDF-Net: An Explainable Al-Driven Decision Support Framework for Histopathological Lung and Colon Cancer Classification" },
-            { id: "235", name: "Ankita Goyal Agarwala", affil: "Gauhati University & The Assam Royal Global University", title: "Intelligent Multimodal AI based Framework for Sugarcane Diseases Analytics using a Novel Dataset from Northeast India" },
-            { id: "237", name: "Parvin Debbarma", affil: "ICFAI University", title: "Deep learning Techniques for Object Detection under Adverse Weather Conditions: A Promising direction" },
-            { id: "250", name: "Soudipta De", affil: "Independent Researcher", title: "Sharpe Based Long Portfolio Optimization: A Comparative Study of Emerging Swarm Metaheuristics" },
-            { id: "108", name: "Jyoti Prakash Singh", affil: "National Institute of Technology Patna", title: "Span Level Explainable Al for Automated Content Moderation" },
-            { id: "192", name: "Arka Dash", affil: "Kalyani Government Engineering College", title: "Photochemistry-Guided Predictive Analytics for 24-Hour O3/NO2 Forecasting in Delhi" },
-            { id: "205", name: "Sayambar Roy Chowdhury", affil: "Heritage Institute of Technology", title: "Mosaic: Multi-Mechanism Differential Privacy for Census Data Publishing" },
-            { id: "218", name: "Indrajit Bhattacharya", affil: "Kalyani Government Engineering College", title: "A Decision Support System for Al Content Detection Using Neural Networks and Ensemble Architecture" },
-            { id: "240", name: "SUBHRADEEP RAY", affil: "University of Gour Banga", title: "PSRE: A Parallel Stability Range Explanation Framework for Human-Centric Explainable Machine Learning" },
-            { id: "242", name: "Miss Pranita Mukhia", affil: "North Bengal University", title: "NHD-100: A Nepali Handwriting Dataset for Automated Offline Writer Identification and Decision Support" },
-            { id: "252", name: "Subhasish Das", affil: "B.P.Poddar Institute of Management and Technology", title: "Intelligent Driver Safety Monitoring Using a Multi-modal Cyber-Physical System for Drowsiness and Alcohol Detection" },
-            { id: "2", name: "Sayan Pal", affil: "The University of Burdwan", title: "Conductors Sorting: A Two-Phase Pocket-Based Sorting Framework with Deferred Settlement for Denomination Streams" },
-            { id: "72", name: "Shubha Chakraborty", affil: "The University of Burdwan", title: "Safe Railway Signal Control through Explainable Al and TLA+ Verification with Counterexample-Guided Diagnosis" },
-            { id: "111", name: "SOUMYA PAL", affil: "Visva-Bharati University", title: "Correlation-Aware CNN-Transformer for Intelligent Medical Decision Support" },
-            { id: "149", name: "Sanjukta Banerjee", affil: "Vidyasagar University", title: "Predictive and Prescriptive Decision Intelligence in Time-Series Transcriptomics: A Fuzzy Biclustering Approach" },
-            { id: "151", name: "Subhajit Banerjee", affil: "Jadavpur University", title: "Predictive Analytics for Spectral Reconstruction from sRGB Data: An Application in Color Measurement for the Printing Industry" },
-            { id: "154", name: "Souvik Biswas", affil: "Government College of Engineering and Textile Technology", title: "A Privacy-Preserving Predictive Analytics Framework for Cardiovascular Risk Assessment using knowledge Graph and Federated Learning" },
-            { id: "157", name: "Dipannita Roy", affil: "University of Kalyani", title: "From Prediction to Prescription: An Explainable Fuzzy-Ensemble Decision Support Framework with Retrieval-Augmented Recommendations for Plant Disease Management" },
-            { id: "75", name: "Soumesh Kundu", affil: "B. P. Poddar Institute of Management & Technology", title: "Propagation-Aware Energy Efficiency Analysis for Device-to-Device Communication in 5G Networks" },
-            { id: "150", name: "Kaushik Mondal", affil: "Dr. B.C. Roy Engineering College", title: "Investigating the Impact of Signal Decomposition on PM2.5 Forecasting using Hybrid LSTM: Akima-EMD and WSWOA-PE-VMD" },
-            { id: "182", name: "Dr. Krishna Vijay Kumar Singh", affil: "Sikkim Manipal Institute of Technology", title: "An Explainable Ensemble-Based Framework for Binary Network Intrusion Detection" },
-            { id: "217", name: "ASHIS DEY", affil: "Silda Chandra Sekhar College", title: "An AI-Driven Secure Communication Model: LWT-based Reversible Medical Image Watermarking Approach using Blockchain and CRS Interpolation" },
-            { id: "229", name: "Ankan Paul", affil: "Institute of Engineering and Management", title: "Context-Aware Coreference Resolution for Multilingual Business Communication Across Eleven Indian Languages: An NLP Framework for Enterprise Decision Support" },
-            { id: "233", name: "Ranjan Singha", affil: "University of North Bengal", title: "Intelligent Performance Evaluation of Bangla Audio Deepfake Detection under Network-Induced Audio Degradation" },
-            { id: "234", name: "Sarbajit Chaki", affil: "Kalyani Government Engineering College", title: "Support Vector Machine (SVM) Assisted Blackhole and DDoS Attack Detection In Software Defined Wireless Sensor Networks" },
-            { id: "174", name: "Piyush Jain", affil: "Heritage Institute of Technology", title: "Explainable and Resource-Efficient Spatial Reasoning in Multimodal LLMs for Decision-Critical Applications" },
-            { id: "175", name: "Sreeparna Guha", affil: "Institute of Engineering & Management", title: "A Decision Support Framework for Flood Risk Assessment Using Approximate Indiscernibility-Based Rough Set Clustering" },
-            { id: "193", name: "Debangshu Naskar", affil: "Government College of Engineering & Textile Technology", title: "A Hybrid Quantum-Deep Learning Computational Model for Drug Molecule's Energy Optimization" },
-            { id: "204", name: "Chayan Ghosh", affil: "Jadavpur University", title: "Efficient Long Patent Document Summarization using Extraction-Guided Fine-Tuning for Business Intelligence" },
-            { id: "231", name: "Ratul Das", affil: "Jadavpur University", title: "Attention-Enhanced Bengali Semantic Analytics Using LLM-Augmented Corpora for Intelligent Decision Support" },
-            { id: "238", name: "Ananya Chakraborty", affil: "Jalpaiguri Government Engineering College", title: "An Intelligent Decision Support System for Student Placement Prediction Using Machine Learning and Web-Based Analytics" },
-            { id: "246", name: "Samujjal Ghosh", affil: "Indian Statistical Institute", title: "An AI-Driven Emotion Analytics Framework for Mental Health Decision Support Systems." },
-            { id: "109", name: "ANUPAM BAIDYA", affil: "Dr. B.C. Roy Engineering College", title: "An Intelligent Machine Learning Framework for Early Diabetes Risk Prediction Using Clinical Health Indicators" },
-            { id: "120", name: "Gnaneswar TS", affil: "SRM Institute of Science and Technology", title: "RateX+: A Credibility-Weighted, Reason-Aware, and Fairness-Audited Multidomain Scoring Framework for Employees and Employers" },
-            { id: "138", name: "KALYAN KUMAR DAS", affil: "Techno India University", title: "DRWEC-LRA: A Dynamic Reliability-Weighted Ensemble Clustering Framework for Business Intelligence Applications" },
-            { id: "142", name: "KALYAN KUMAR DAS", affil: "Techno India University", title: "AFE-CNS: An Adaptive Fuzzy Edge-Based Cluster Validity Framework for Retail and Healthcare Data Analytics" },
-            { id: "207", name: "Shubhangini dey", affil: "Heritage Institute of Technology", title: "Advancing Equity Risk Prediction in Indian Construction Firms: Integrating Econometric and Machine Learning Approaches" },
-            { id: "223", name: "Venkatarami Reddy Nallappagari", affil: "Oakland Consulting Group", title: "Architecting Cloud-Native HR and Finance Systems Using Workday Enterprise Solutions" },
-            { id: "110", name: "Shashidhar yadav J", affil: "Christ University", title: "Ripples in Black Gold: How Oil Volatility Shapes Global Exporters and Importers using Deep Learning" },
-            { id: "114", name: "Deepika", affil: "Shri Ramswaroop Memorial University", title: "Lightweight TinyML Based Human Activity Recognition for Secure Edge AloT Consumer Electronics" },
-            { id: "172", name: "Shashidhar Yadav J", affil: "Christ University", title: "Beyond Symmetry: Inflation and Interest Rate Shocks Across NSE Sectoral Indices - Evidence from Forecast Error Variance Decomposition" },
-            { id: "177", name: "Vinay M Madgi", affil: "KLE Technological University", title: "An Edge-Native IoT Smart Surveillance System with Multi-Factor Threat Reasoning" },
-            { id: "210", name: "Misa Haldar", affil: "Meghnad Saha Institute of Technology", title: "Adaptive MMSE-Compressed Sensing Based Channel Estimation for RIS-Assisted 6G Wireless Systems with Closed-Form Performance Analysis" }
+        // Complete 24 Resource Persons Data
+        let attendees = [
+            { id: "1", name: "Prof. Bimal Kumar Roy", role: "Chief Guest", affil: "Padma Shri Awardee and Former Director, Indian Statistical Institute, Kolkata, India." },
+            { id: "2", name: "Prof. Sushmita Mitra", role: "Keynote Speaker", affil: "Full Professor (HAG), Machine Intelligence Unit, Indian Statistical Institute, Kolkata, India." },
+            { id: "3", name: "Prof. Wei-Chang Yeh", role: "Keynote Speaker", affil: "University Distinguished Professor, National Tsing-Hua University, Hsinchu, Taiwan." },
+            { id: "4", name: "Prof. Asif Ekbal", role: "Keynote Speaker", affil: "Professor, Indian Institute of Technology, Patna, India." },
+            { id: "5", name: "Dr. Siddhartha Bhattacharyya", role: "Keynote Speaker", affil: "Senior Reseracher III IAL(M), VSB Technical University of Ostrava, Czech Republic." },
+            { id: "6", name: "Prof. Paramartha Dutta", role: "Session Chair", affil: "Professor, Visva-Bharati, Santineketan, India; Program Chair, CICBA 2026." },
+            { id: "7", name: "Prof. Anirban Mukhopadhyay", role: "Session Chair", affil: "Chair, IEEE CIS Kolkata Chapter; & Professor, University of Kalyani, India." },
+            { id: "8", name: "Prof. Debashis De", role: "Session Chair", affil: "Professor, Maulana Abul Kalam Azad University of Technology, Haringhata, India." },
+            { id: "9", name: "Prof. Sunil Karforma", role: "Session Chair", affil: "Professor, The University of Burdwan, Burdwan, India." },
+            { id: "10", name: "Prof. Koushik Roy", role: "Session Chair", affil: "Professor, West Bengal State University, India." },
+            { id: "11", name: "Dr. Indrajit Bhattacharya", role: "Session Chair", affil: "Associate Professor, Kalyani Government Engineering College, Kalyani, West Bengal." },
+            { id: "12", name: "Dr. Kakali Datta", role: "Session Chair", affil: "Associate Professor, Department of Computer Science, Visva-Bharati, Santiniketan, India." },
+            { id: "13", name: "Dr. Kartick Chandra Mondal", role: "Session Chair", affil: "Associate Professor, SRM University, Andhra Pradesh, India." },
+            { id: "14", name: "Dr. Jyoti Prakash Singh", role: "Session Chair", affil: "Associate Professor, National Institute of Technology, Patna, India." },
+            { id: "15", name: "Dr. Anuradha Banerjee", role: "Session Chair", affil: "Assistant Professor, Kalyani Government Engineering College, Kalyani, India." },
+            { id: "16", name: "Dr. Debaditya Barman", role: "Session Chair", affil: "Vice-Chair, IEEE CIS Kolkata Chapter & Assistant Professor, Visva-Bharati, Santineketan, India." },
+            { id: "17", name: "Dr. Tohida Rehman", role: "Session Chair", affil: "Assistant Professor, Jadavpur University, Kolkata, India." },
+            { id: "18", name: "Dr. Rahul Karmakar", role: "Session Chair", affil: "Assistant Professor, The University of Burdwan, Burdwan, India." },
+            { id: "19", name: "Dr. Akhil Kumar Das", role: "Session Chair", affil: "Assistant Professor, Gour Mahavidaylaya, Malda, India." },
+            { id: "20", name: "Dr. Arijit Bhattacharya", role: "Session Chair", affil: "Assistant Professor, Gour Mahavidaylya, Malda, India." },
+            { id: "21", name: "Ekram Alam", role: "Session Chair", affil: "Assistant Professor, Gour Mahavidaylya, Malda, India." },
+            { id: "22", name: "Dr. Debasmita Saha", role: "Session Chair", affil: "Assistant Professor, University of Gour Banga, Malda, India." },
+            { id: "23", name: "Dr. Abu Sufian", role: "Session Chair", affil: "Assistant Professor, University of Gour Banga, Malda, India." },
+            { id: "24", name: "Farhana Sultana", role: "Session Chair", affil: "Assistant Professor, University of Gour Banga, Malda, India." }
         ];
 
         const allChairs = [
@@ -568,14 +500,14 @@
         function loadList() {
             const list = document.getElementById('presenterList');
             list.innerHTML = '';
-            presenters.forEach((p, index) => {
+            attendees.forEach((p, index) => {
                 const div = document.createElement('div');
                 div.className = `presenter-item ${index === currentIndex ? 'active' : ''}`;
                 div.onclick = () => renderCertificate(index);
                 div.innerHTML = `
-                    <div class="p-id">ID: ${p.id}</div>
+                    <div class="p-id">SL No: ${p.id}</div>
                     <div class="p-name">${p.name}</div>
-                    <div class="p-affil">${p.affil}</div>
+                    <div class="p-affil">${p.role}</div>
                 `;
                 list.appendChild(div);
             });
@@ -583,21 +515,13 @@
 
         function renderCertificate(index) {
             currentIndex = index;
-            const p = presenters[index];
+            const p = attendees[index];
             
-            document.getElementById('certRef').innerText = `Ref : CICBA-2026/Paper ID - ${p.id}`;
+            document.getElementById('certRef').innerText = `Ref : CICBA-2026/Appreciation - ${p.id}`;
             document.getElementById('certName').innerText = p.name;
-            
-            // Grammar logic for "Independent"
-            const ofElem = document.getElementById('certOf');
-            if(p.affil.toLowerCase().includes("independent")) {
-                ofElem.style.display = 'none';
-            } else {
-                ofElem.style.display = 'block';
-            }
-            
             document.getElementById('certAffil').innerText = p.affil;
-            document.getElementById('certTitle').innerText = `"${p.title}"`;
+            // Dropped the quotes since roles like Chief Guest shouldn't have quotes
+            document.getElementById('certTitle').innerText = p.role;
 
             loadList();
         }
@@ -632,58 +556,47 @@
             const id = document.getElementById('newId').value.trim();
             const name = document.getElementById('newName').value.trim();
             const affil = document.getElementById('newAffil').value.trim();
-            const title = document.getElementById('newTitle').value.trim();
+            const role = document.getElementById('newRole').value.trim();
             
-            if(!id || !name || !affil || !title) {
-                showMessage("Please fill in all fields (including Paper ID).");
+            if(!id || !name || !affil || !role) {
+                showMessage("Please fill in all fields.");
                 return;
             }
             
-            presenters.unshift({ id, name, affil, title });
+            attendees.unshift({ id, name, affil, role: role });
             
             document.getElementById('newId').value = '';
             document.getElementById('newName').value = '';
             document.getElementById('newAffil').value = '';
-            document.getElementById('newTitle').value = '';
+            document.getElementById('newRole').value = '';
             
             loadList();
             renderCertificate(0);
         }
 
         function startBulkPrint() {
-           
+            showMessage(" ");
             
             const bulkContainer = document.getElementById('bulkPrintContainer');
-            bulkContainer.innerHTML = ''; // Clear previous runs
+            bulkContainer.innerHTML = ''; 
             
-            // Generate a clone of the certificate for every single presenter
-            for(let i = 0; i < presenters.length; i++) {
-                const p = presenters[i];
+            for(let i = 0; i < attendees.length; i++) {
+                const p = attendees[i];
                 const clone = document.getElementById('certificateNode').cloneNode(true);
                 
-                clone.id = ''; // Remove ID for the clone
+                clone.id = ''; 
                 clone.className = 'certificate-wrapper bulk-cert';
                 
-                // Inject the specific presenter's data into the clone with updated Ref text
-                clone.querySelector('.ref-number').innerText = `Ref : CICBA-2026/Paper ID - ${p.id}`;
+                clone.querySelector('.ref-number').innerText = `Ref : CICBA-2026/Appreciation - ${p.id}`;
                 clone.querySelector('.name').innerText = p.name;
-                clone.querySelector('.paper-title').innerText = `"${p.title}"`;
+                clone.querySelector('.paper-title').innerText = p.role;
                 clone.querySelector('.affil-text').innerText = p.affil;
-                
-                const ofElem = clone.querySelector('.of');
-                if(p.affil.toLowerCase().includes("independent")) {
-                    ofElem.style.display = 'none';
-                } else {
-                    ofElem.style.display = 'block';
-                }
                 
                 bulkContainer.appendChild(clone);
             }
 
-            // Wait 1 second for the heavy graphics to render in the DOM, then trigger one print dialog
             setTimeout(() => {
                 window.print();
-                // Clean up the DOM after printing is triggered
                 setTimeout(() => bulkContainer.innerHTML = '', 1000);
             }, 1000);
         }
@@ -695,3 +608,4 @@
     </script>
 </body>
 </html>
+
