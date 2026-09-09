@@ -1,1 +1,660 @@
-abc
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CICBA 2026 Appreciation Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0a2351;
+            --secondary: #c09d5c;
+            --bg-color: #fcfcfc;
+            --text-main: #1a1a1a;
+        }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #e2e8f0;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        /* Sidebar Styles */
+        .sidebar {
+            width: 350px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+        .header {
+            padding: 20px;
+            background: var(--primary);
+            color: white;
+            text-align: center;
+        }
+        .controls {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            background: #f8fafc;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .btn:hover { background: #1e3a8a; }
+        .btn-success { background: #16a34a; }
+        .btn-success:hover { background: #15803d; }
+        
+        .chair-selection {
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        .chair-selection label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+        .chair-selection input { margin-right: 8px; }
+
+        .add-form {
+            background: #dcfce7;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .add-form input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+        }
+        .presenter-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        .presenter-item {
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .presenter-item:hover, .presenter-item.active {
+            background: #f1f5f9;
+            border-color: var(--primary);
+        }
+        .p-id { font-size: 10px; color: #64748b; font-weight: bold; }
+        .p-name { font-weight: 600; font-size: 14px; color: var(--primary); }
+        .p-affil { font-size: 11px; color: #64748b; margin-top: 4px; line-height: 1.3; }
+
+        .preview-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #cbd5e1;
+            overflow: auto;
+            padding: 20px;
+        }
+
+        .certificate-wrapper {
+            background: white;
+            /* Fixed dimensions representing A4 Landscape at 96dpi (1123 x 794) */
+            width: 1123px;
+            height: 794px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform-origin: center center;
+            transform: scale(0.85);
+        }
+
+        .border-outer {
+            position: absolute;
+            top: 15px; left: 15px; right: 15px; bottom: 15px;
+            border: 4px solid var(--primary);
+            border-radius: 20px;
+        }
+        .border-inner-1 {
+            position: absolute;
+            top: 8px; left: 8px; right: 8px; bottom: 8px;
+            border: 2px solid var(--secondary);
+            border-radius: 14px;
+        }
+        .border-inner-2 {
+            position: absolute;
+            top: 8px; left: 8px; right: 8px; bottom: 8px;
+            border: 1px dashed var(--secondary);
+            border-radius: 8px;
+        }
+
+        .bg-graphics {
+            position: absolute;
+            top: 20px; left: 20px; right: 20px; bottom: 20px;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+            border-radius: 15px;
+        }
+        
+        .certificate-content {
+            position: absolute;
+            top: 25px; left: 25px; right: 25px; bottom: 25px;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.95) 40%, rgba(255,255,255,0.7) 70%, rgba(255,255,255,0) 100%);
+        }
+
+        .ref-number {
+            position: absolute;
+            top: 15px;
+            left: 55px; 
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .logos {
+            display: flex;
+            justify-content: center;
+            gap: 55px; 
+            margin-top: 30px;
+            height: 70px;
+        }
+        .logos img {
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .text-block {
+            text-align: center;
+            padding: 0 80px;
+            margin-top: 15px;
+        }
+
+        .conf-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            line-height: 1.3;
+            margin-bottom: 2px;
+        }
+
+        .conf-date {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .cert-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: 50px; 
+            color: var(--primary);
+            margin: 5px 0 15px 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .presented-to {
+            font-size: 16px;
+            font-style: italic;
+            color: var(--text-main);
+            margin-bottom: 10px;
+        }
+
+        .name {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 5px;
+        }
+
+        .affiliation {
+            font-size: 16px;
+            color: var(--text-main);
+            margin-bottom: 15px;
+            padding: 0 80px;
+            line-height: 1.4;
+        }
+
+        .for-presenting {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+
+        .paper-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .conf-details {
+            font-size: 15px;
+            line-height: 1.5;
+            color: #444;
+            padding: 0 60px;
+        }
+
+        .signature-block {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 30px; 
+            padding: 0 30px;
+            box-sizing: border-box;
+        }
+        .signature {
+            text-align: center;
+            width: 200px;
+        }
+        .sig-line {
+            border-top: 1px solid var(--text-main);
+            margin-bottom: 5px;
+            padding-top: 5px;
+        }
+        .sig-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        .sig-title {
+            font-size: 11px;
+            color: #444;
+        }
+
+        #bulkPrintContainer {
+            display: none;
+        }
+
+        @media print {
+            @page { size: A4 landscape; margin: 0; }
+            body { 
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important;
+                margin: 0; 
+            }
+            .sidebar, .preview-area { display: none !important; }
+            #bulkPrintContainer { display: block !important; }
+            
+            .bulk-cert {
+                position: relative !important;
+                width: 297mm !important;
+                height: 210mm !important;
+                transform: none !important;
+                box-shadow: none !important;
+                margin: 0 !important;
+                page-break-after: always;
+                break-after: page;
+                overflow: hidden;
+            }
+            .bulk-cert:last-child {
+                page-break-after: auto;
+                break-after: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="header">
+            <h3>CICBA 2026<br><span style="font-size: 14px; font-weight: normal;">Appreciation Generator</span></h3>
+        </div>
+        
+        <div class="controls">
+            <button class="btn btn-success" onclick="startBulkPrint()">Print All to PDF</button>
+            
+            <div class="chair-selection" style="margin-bottom: 12px; border-bottom: 1px solid #ddd; padding-bottom: 12px;">
+                <strong>Adjust Logo Spacing:</strong>
+                <input type="range" id="logoGapSlider" min="20" max="150" value="55" style="width: 100%; margin-top: 8px; cursor: pointer;" oninput="updateLogoGap()">
+                <div style="text-align: right; font-size: 10px; color: #666;" id="logoGapValue">55px</div>
+            </div>
+
+            <div class="chair-selection">
+                <strong>Include Signatures:</strong>
+                <label><input type="checkbox" id="chair1" checked onchange="updateSignatures()"> Dr. Abu Sufian</label>
+                <label><input type="checkbox" id="chair2" checked onchange="updateSignatures()"> Dr. Debasmita Saha</label>
+                <label><input type="checkbox" id="chair3" checked onchange="updateSignatures()"> Farhana Sultana</label>
+                <label><input type="checkbox" id="chair4" checked onchange="updateSignatures()"> Prof. Anirban Mukhopadhyay</label>
+            </div>
+        </div>
+
+        <div class="add-form">
+            <strong style="font-size: 12px; display: block; margin-bottom: 8px;">+ Add Resource Person Manually</strong>
+            <input type="text" id="newId" placeholder="SL No. (e.g. 25)">
+            <input type="text" id="newName" placeholder="Name">
+            <input type="text" id="newRole" placeholder="Role (e.g. Session Chair)">
+            <input type="text" id="newAffil" placeholder="Designation & Affiliation">
+            <button class="btn btn-success" style="margin-bottom:0; padding: 8px;" onclick="addPresenter()">Add to List</button>
+        </div>
+
+        <div class="presenter-list" id="presenterList">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+
+    <div class="preview-area">
+        <div class="certificate-wrapper" id="certificateNode">
+            <!-- Curvy Borders -->
+            <div class="border-outer">
+                <div class="border-inner-1">
+                    <div class="border-inner-2"></div>
+                </div>
+            </div>
+
+            <!-- Highly Detailed Guilloche & Tech Background -->
+            <div class="bg-graphics">
+                <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Corner Flourishes -->
+                    <g stroke="#0a2351" stroke-width="2" fill="none" opacity="0.8">
+                        <path d="M5,45 C5,15 15,5 45,5 C25,5 5,25 5,45 Z" fill="#c09d5c" stroke="none" />
+                        <path d="M15,55 C15,25 25,15 55,15" />
+                        <circle cx="10" cy="10" r="3" fill="#0a2351" />
+
+                        <path d="M1078,45 C1078,15 1068,5 1038,5 C1058,5 1078,25 1078,45 Z" fill="#c09d5c" stroke="none" />
+                        <path d="M1068,55 C1068,25 1058,15 1028,15" />
+                        <circle cx="1073" cy="10" r="3" fill="#0a2351" />
+
+                        <path d="M5,709 C5,739 15,749 45,749 C25,749 5,729 5,709 Z" fill="#c09d5c" stroke="none" />
+                        <path d="M15,699 C15,729 25,739 55,739" />
+                        <circle cx="10" cy="744" r="3" fill="#0a2351" />
+
+                        <path d="M1078,709 C1078,739 1068,749 1038,749 C1058,749 1078,729 1078,709 Z" fill="#c09d5c" stroke="none" />
+                        <path d="M1068,699 C1068,729 1058,739 1028,739" />
+                        <circle cx="1073" cy="744" r="3" fill="#0a2351" />
+                    </g>
+
+                    <!-- Central Classic Guilloche Pattern -->
+                    <g transform="translate(541.5, 377)" opacity="0.07" stroke="#0a2351" stroke-width="1.2" fill="none">
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(0)" />
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(15)" />
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(30)" />
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(45)" />
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(60)" />
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(75)" />
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(90)" />
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(105)" />
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(120)" />
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(135)" />
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(150)" />
+                        <ellipse cx="0" cy="0" rx="350" ry="120" transform="rotate(165)" />
+                    </g>
+                    
+                    <g transform="translate(541.5, 377)" opacity="0.12" stroke="#c09d5c" stroke-width="1.5" fill="none">
+                        <ellipse cx="0" cy="0" rx="160" ry="280" transform="rotate(0)" />
+                        <ellipse cx="0" cy="0" rx="160" ry="280" transform="rotate(22.5)" />
+                        <ellipse cx="0" cy="0" rx="160" ry="280" transform="rotate(45)" />
+                        <ellipse cx="0" cy="0" rx="160" ry="280" transform="rotate(67.5)" />
+                        <ellipse cx="0" cy="0" rx="160" ry="280" transform="rotate(90)" />
+                        <ellipse cx="0" cy="0" rx="160" ry="280" transform="rotate(112.5)" />
+                        <ellipse cx="0" cy="0" rx="160" ry="280" transform="rotate(135)" />
+                        <ellipse cx="0" cy="0" rx="160" ry="280" transform="rotate(157.5)" />
+                    </g>
+
+                    <!-- Tech Nodes -->
+                    <g opacity="0.25">
+                        <path d="M -50 377 L 100 377 M 983 377 L 1133 377" stroke="#0a2351" stroke-width="2" stroke-dasharray="5,5" />
+                        
+                        <g transform="translate(100, 377)" stroke="#c09d5c" stroke-width="2" fill="none">
+                            <polygon points="0,-40 35,-20 35,20 0,40 -35,20 -35,-20" />
+                            <circle cx="0" cy="0" r="10" fill="#0a2351" />
+                            <line x1="35" y1="-20" x2="80" y2="-50" />
+                            <line x1="35" y1="20" x2="80" y2="50" />
+                            <circle cx="80" cy="-50" r="3" fill="#c09d5c" />
+                            <circle cx="80" cy="50" r="3" fill="#c09d5c" />
+                        </g>
+
+                        <g transform="translate(983, 377)" stroke="#c09d5c" stroke-width="2" fill="none">
+                            <polygon points="0,-40 35,-20 35,20 0,40 -35,20 -35,-20" />
+                            <circle cx="0" cy="0" r="10" fill="#0a2351" />
+                            <line x1="-35" y1="-20" x2="-80" y2="-50" />
+                            <line x1="-35" y1="20" x2="-80" y2="50" />
+                            <circle cx="-80" cy="-50" r="3" fill="#c09d5c" />
+                            <circle cx="-80" cy="50" r="3" fill="#c09d5c" />
+                        </g>
+                    </g>
+                </svg>
+            </div>
+
+            <div class="certificate-content">
+                <div class="ref-number" id="certRef">Ref : CICBA-2026/RP - 1</div>
+                
+                <div class="logos" id="logoContainer">
+                    <img src="clogo.png" alt="CICBA">
+                    <img src="ulogo.png" alt="UGB">
+                    <img src="slogo.png" alt="Springer">
+                    <img src="ilogo.png" alt="IEEE">
+                </div>
+
+                <div class="text-block">
+                    <div class="conf-title">8th International Conference on Computational Intelligence in Communications and Business Analytics (CICBA-2026)</div>
+                    <div class="conf-date">10-12 September 2026</div>
+                    <div class="cert-title">Letter of Appreciation</div>
+                    
+                    <div class="presented-to">Presented to</div>
+                    <div class="name" id="certName">Prof. Bimal Kumar Roy</div>
+                    
+                    <div class="affiliation" id="certAffil">
+                        Padma Shri Awardee and Former Director, Indian Statistical Institute, Kolkata, India.
+                    </div>
+
+                    <div class="for-presenting">for his/her valuable contribution as a</div>
+                    
+                    <div class="paper-title" id="certRole">Chief Guest</div>
+                    
+                    <div class="conf-details">
+                        at the CICBA-2026 , held during September 10-12, 2026, organized by the Department of Computer Science, University of Gour Banga, Malda, West Bengal, India.
+                    </div>
+                </div>
+
+                <div class="signature-block" id="signatureContainer">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden container used for generating the multi-page PDF -->
+    <div id="bulkPrintContainer"></div>
+
+    <script>
+        function showMessage(msg) {
+            const mbox = document.createElement('div');
+            mbox.style.cssText = "position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#0a2351;color:#fff;padding:15px 25px;border-radius:8px;z-index:9999;font-family:sans-serif;box-shadow:0 4px 12px rgba(0,0,0,0.2);";
+            mbox.innerText = msg;
+            document.body.appendChild(mbox);
+            setTimeout(() => mbox.remove(), 4000);
+        }
+
+        // Full Resource Persons Data
+        let persons = [
+            { id: "1", name: "Prof. Bimal Kumar Roy", role: "Chief Guest", affil: "Padma Shri Awardee and Former Director, Indian Statistical Institute, Kolkata, India." },
+            { id: "2", name: "Prof. Sushmita Mitra", role: "Keynote Speaker", affil: "Full Professor (HAG), Machine Intelligence Unit, Indian Statistical Institute, Kolkata, India." },
+            { id: "3", name: "Prof. Wei-Chang Yeh", role: "Keynote Speaker", affil: "University Distinguished Professor, National Tsing-Hua University, Hsinchu, Taiwan." },
+            { id: "4", name: "Prof. Asif Ekbal", role: "Keynote Speaker", affil: "Professor, Indian Institute of Technology, Patna, India." },
+            { id: "5", name: "Dr. Siddhartha Bhattacharyya", role: "Keynote Speaker", affil: "Senior Reseracher III IAL(M), VSB Technical University of Ostrava, Czech Republic." },
+            { id: "6", name: "Prof. Paramartha Dutta", role: "Session Chair", affil: "Professor, Visva-Bharati, Santineketan, India; Program Chair, CICBA 2026." },
+            { id: "7", name: "Prof. Anirban Mukhopadhyay", role: "Session Chair", affil: "Chair, IEEE CIS Kolkata Chapter; & Professor, University of Kalyani, India." },
+            { id: "8", name: "Prof. Debashis De", role: "Session Chair", affil: "Professor, Maulana Abul Kalam Azad University of Technology, Haringhata, India." },
+            { id: "9", name: "Prof. Sunil Karforma", role: "Session Chair", affil: "Professor, The University of Burdwan, Burdwan, India." },
+            { id: "10", name: "Prof. Koushik Roy", role: "Session Chair", affil: "Professor, West Bengal State University, India." },
+            { id: "11", name: "Dr. Indrajit Bhattacharya", role: "Session Chair", affil: "Associate Professor, Kalyani Government Engineering College, Kalyani, West Bengal." },
+            { id: "12", name: "Dr. Kakali Datta", role: "Session Chair", affil: "Associate Professor, Department of Computer Science, Visva-Bharati, Santiniketan, India." },
+            { id: "13", name: "Dr. Kartick Chandra Mondal", role: "Session Chair", affil: "Associate Professor, SRM University, Andhra Pradesh, India." },
+            { id: "14", name: "Dr. Jyoti Prakash Singh", role: "Session Chair", affil: "Associate Professor, National Institute of Technology, Patna, India." },
+            { id: "15", name: "Dr. Anuradha Banerjee", role: "Session Chair", affil: "Assistant Professor, Kalyani Government Engineering College, Kalyani, India." },
+            { id: "16", name: "Dr. Debaditya Barman", role: "Session Chair", affil: "Vice-Chair, IEEE CIS Kolkata Chapter & Assistant Professor, Visva-Bharati, Santineketan, India." },
+            { id: "17", name: "Dr. Tohida Rehman", role: "Session Chair", affil: "Assistant Professor, Jadavpur University, Kolkata, India." },
+            { id: "18", name: "Dr. Rahul Karmakar", role: "Session Chair", affil: "Assistant Professor, The University of Burdwan, Burdwan, India." },
+            { id: "19", name: "Dr. Akhil Kumar Das", role: "Session Chair", affil: "Assistant Professor, Gour Mahavidaylaya, Malda, India." },
+            { id: "20", name: "Dr. Arijit Bhattacharya", role: "Session Chair", affil: "Assistant Professor, Gour Mahavidaylya, Malda, India." },
+            { id: "21", name: "Ekram Alam", role: "Session Chair", affil: "Assistant Professor, Gour Mahavidaylya, Malda, India." },
+            { id: "22", name: "Dr. Debasmita Saha", role: "Session Chair", affil: "Assistant Professor, University of Gour Banga, Malda, India." },
+            { id: "23", name: "Dr. Abu Sufian", role: "Session Chair", affil: "Assistant Professor, University of Gour Banga, Malda, India." },
+            { id: "24", name: "Farhana Sultana", role: "Session Chair", affil: "Assistant Professor, University of Gour Banga, Malda, India." }
+        ];
+
+        const allChairs = [
+            { name: "Dr. Abu Sufian", role: "Program Chair & Publication Chair", org: "CICBA-2026" },
+            { name: "Dr. Debasmita Saha", role: "Convenor", org: "CICBA-2026" },
+            { name: "Farhana Sultana", role: "Organizing Secretary", org: "CICBA-2026" },
+            { name: "Prof. Anirban Mukhopadhyay", role: "Chair", org: "IEEE CIS Kolkata Chapter" }
+        ];
+
+        let currentIndex = 0;
+
+        function loadList() {
+            const list = document.getElementById('presenterList');
+            list.innerHTML = '';
+            persons.forEach((p, index) => {
+                const div = document.createElement('div');
+                div.className = `presenter-item ${index === currentIndex ? 'active' : ''}`;
+                div.onclick = () => renderCertificate(index);
+                div.innerHTML = `
+                    <div class="p-id">SL: ${p.id}</div>
+                    <div class="p-name">${p.name}</div>
+                    <div class="p-affil">${p.role}</div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        // Generates signature HTML dynamically. 
+        // Skips adding the signature if the recipientName matches the chair's name.
+        function generateSignatureHTML(recipientName) {
+            let html = '';
+            [1, 2, 3, 4].forEach(num => {
+                if(document.getElementById(`chair${num}`).checked) {
+                    const chair = allChairs[num-1];
+                    
+                    // Exclude signature if the chair is receiving the certificate
+                    if (chair.name.toLowerCase() === (recipientName || "").toLowerCase()) {
+                        return; // Skip to the next chair
+                    }
+                    
+                    html += `
+                        <div class="signature">
+                            <div class="sig-line">
+                                <div class="sig-name">${chair.name}</div>
+                                <div class="sig-title">${chair.role}</div>
+                                <div class="sig-title">${chair.org}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            return html;
+        }
+
+        function updateSignatures() {
+            const currentRecipient = persons[currentIndex] ? persons[currentIndex].name : "";
+            const container = document.getElementById('signatureContainer');
+            container.innerHTML = generateSignatureHTML(currentRecipient);
+        }
+
+        function renderCertificate(index) {
+            currentIndex = index;
+            const p = persons[index];
+            
+            document.getElementById('certRef').innerText = `Ref : CICBA-2026/RP - ${p.id}`;
+            document.getElementById('certName').innerText = p.name;
+            document.getElementById('certAffil').innerText = p.affil;
+            document.getElementById('certRole').innerText = p.role;
+
+            updateSignatures(); // Updates signatures taking the current recipient into account
+            loadList();
+        }
+
+        function updateLogoGap() {
+            const gapValue = document.getElementById('logoGapSlider').value;
+            document.getElementById('logoContainer').style.gap = gapValue + 'px';
+            document.getElementById('logoGapValue').innerText = gapValue + 'px';
+        }
+
+        function addPresenter() {
+            const id = document.getElementById('newId').value.trim();
+            const name = document.getElementById('newName').value.trim();
+            const affil = document.getElementById('newAffil').value.trim();
+            const role = document.getElementById('newRole').value.trim();
+            
+            if(!id || !name || !affil || !role) {
+                showMessage("Please fill in all fields (including SL No).");
+                return;
+            }
+            
+            persons.unshift({ id, name, affil, role });
+            
+            document.getElementById('newId').value = '';
+            document.getElementById('newName').value = '';
+            document.getElementById('newAffil').value = '';
+            document.getElementById('newRole').value = '';
+            
+            loadList();
+            renderCertificate(0);
+        }
+
+        function startBulkPrint() {
+          
+            
+            const bulkContainer = document.getElementById('bulkPrintContainer');
+            bulkContainer.innerHTML = ''; 
+            
+            for(let i = 0; i < persons.length; i++) {
+                const p = persons[i];
+                const clone = document.getElementById('certificateNode').cloneNode(true);
+                
+                clone.id = ''; 
+                clone.className = 'certificate-wrapper bulk-cert';
+                
+                clone.querySelector('.ref-number').innerText = `Ref : CICBA-2026/RP - ${p.id}`;
+                clone.querySelector('.name').innerText = p.name;
+                clone.querySelector('.paper-title').innerText = p.role;
+                clone.querySelector('.affiliation').innerText = p.affil;
+                
+                // Dynamically build signatures for this specific print clone
+                clone.querySelector('.signature-block').innerHTML = generateSignatureHTML(p.name);
+                
+                // Carry over the current logo gap to the printed clones
+                const currentGap = document.getElementById('logoContainer').style.gap || '55px';
+                clone.querySelector('.logos').style.gap = currentGap;
+                
+                bulkContainer.appendChild(clone);
+            }
+
+            setTimeout(() => {
+                window.print();
+                setTimeout(() => bulkContainer.innerHTML = '', 1000);
+            }, 1000);
+        }
+
+        // Initialization
+        loadList();
+        renderCertificate(0);
+    </script>
+</body>
+</html>
+
