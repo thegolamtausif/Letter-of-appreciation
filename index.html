@@ -367,8 +367,23 @@
 
             <div class="chair-selection" style="margin-bottom: 12px; border-bottom: 1px solid #ddd; padding-bottom: 12px;">
                 <strong>Signature Format:</strong>
-                <label><input type="checkbox" id="useEsigns" onchange="updateSignatures()"> Use Image E-Signatures</label>
-                <div style="font-size: 10px; color: #666; margin-top: 4px;">Save files as sign1.png, sign2.png, sign3.png, sign4.png in the same folder.</div>
+                <label><input type="checkbox" id="useEsigns" onchange="toggleUploadSection(); updateSignatures()"> Enable Image E-Signatures</label>
+                
+                <div id="uploadSection" style="display: none; margin-top: 10px; background: #e2e8f0; padding: 10px; border-radius: 6px; gap: 6px; flex-direction: column;">
+                    <div style="font-size: 10px; color: #475569; margin-bottom: 4px; line-height: 1.2;">Upload local signatures (keeps your GitHub repo secure):</div>
+                    <div style="display:flex; align-items:center; justify-content:space-between; font-size: 10px;">
+                        <span>Dr. Sufian:</span> <input type="file" accept="image/*" onchange="handleUpload(event, 1)" style="max-width: 135px; font-size: 9px;">
+                    </div>
+                    <div style="display:flex; align-items:center; justify-content:space-between; font-size: 10px;">
+                        <span>Dr. Saha:</span> <input type="file" accept="image/*" onchange="handleUpload(event, 2)" style="max-width: 135px; font-size: 9px;">
+                    </div>
+                    <div style="display:flex; align-items:center; justify-content:space-between; font-size: 10px;">
+                        <span>F. Sultana:</span> <input type="file" accept="image/*" onchange="handleUpload(event, 3)" style="max-width: 135px; font-size: 9px;">
+                    </div>
+                    <div style="display:flex; align-items:center; justify-content:space-between; font-size: 10px;">
+                        <span>Prof. Anirban:</span> <input type="file" accept="image/*" onchange="handleUpload(event, 4)" style="max-width: 135px; font-size: 9px;">
+                    </div>
+                </div>
             </div>
 
             <div class="chair-selection">
@@ -493,6 +508,21 @@
         ];
 
         let currentIndex = 0;
+        let uploadedSigns = { 1: null, 2: null, 3: null, 4: null };
+
+        function toggleUploadSection() {
+            const isChecked = document.getElementById('useEsigns').checked;
+            document.getElementById('uploadSection').style.display = isChecked ? 'flex' : 'none';
+        }
+
+        function handleUpload(event, num) {
+            const file = event.target.files[0];
+            if (file) {
+                uploadedSigns[num] = URL.createObjectURL(file);
+                updateSignatures();
+                loadList();
+            }
+        }
 
         function loadList() {
             const list = document.getElementById('presenterList');
@@ -511,11 +541,11 @@
         }
 
         // Generates signature HTML dynamically. 
-        // Handles E-sign images and skips signature if recipientName matches the chair's name.
+        // Skips adding the signature if the recipientName matches the chair's name.
         function generateSignatureHTML(recipientName) {
             let html = '';
             const useEsigns = document.getElementById('useEsigns') ? document.getElementById('useEsigns').checked : false;
-            
+
             [1, 2, 3, 4].forEach(num => {
                 if(document.getElementById(`chair${num}`).checked) {
                     const chair = allChairs[num-1];
@@ -525,8 +555,10 @@
                         return; // Skip to the next chair
                     }
                     
-                    const signImageHTML = useEsigns ? `<img src="sign${num}.png" class="e-sign" alt="${chair.name} Signature" onerror="this.style.opacity='0'">` : `<div style="height: 75px;"></div>`;
-
+                    // Use uploaded file if available, otherwise fallback to local sign1.png
+                    const signImageSrc = uploadedSigns[num] ? uploadedSigns[num] : `sign${num}.png`;
+                    const signImageHTML = useEsigns ? `<img src="${signImageSrc}" class="e-sign" alt="${chair.name} Signature" onerror="this.style.opacity='0'">` : `<div style="height: 75px;"></div>`;
+                    
                     html += `
                         <div class="signature">
                             ${signImageHTML}
