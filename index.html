@@ -127,6 +127,7 @@
             transform: scale(0.85);
             font-family: 'Montserrat', sans-serif;
             overflow: hidden;
+            display: flex;
         }
 
         /* Minimalistic Borders */
@@ -196,6 +197,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center; /* Ensures the underline shrink-wraps exactly to the text */
         }
 
         .conf-title {
@@ -240,7 +242,6 @@
             color: var(--primary);
             margin-bottom: 8px;
             border-bottom: 2px solid var(--secondary);
-            align-self: center; /* Forces the underline to shrink exactly to the text width */
             display: inline-block;
             padding: 0 25px 6px 25px;
         }
@@ -266,9 +267,17 @@
             font-size: 28px;
             font-weight: 700;
             color: var(--secondary);
-            margin-bottom: 15px;
+            margin-bottom: 5px;
             letter-spacing: 2px;
             text-transform: uppercase;
+        }
+
+        .paper-id-display {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 15px;
+            letter-spacing: 1px;
         }
 
         .conf-details {
@@ -286,7 +295,7 @@
             gap: 20px; 
             padding: 0;
             box-sizing: border-box;
-            margin-top: auto; /* Forces the block to the very bottom, creating clear space */
+            margin-top: auto; 
         }
         .signature {
             text-align: center;
@@ -380,9 +389,6 @@
                     <div style="display:flex; align-items:center; justify-content:space-between; font-size: 10px;">
                         <span>F. Sultana:</span> <input type="file" accept="image/*" onchange="handleUpload(event, 3)" style="max-width: 135px; font-size: 9px;">
                     </div>
-                    <div style="display:flex; align-items:center; justify-content:space-between; font-size: 10px;">
-                        <span>Prof. Anirban:</span> <input type="file" accept="image/*" onchange="handleUpload(event, 4)" style="max-width: 135px; font-size: 9px;">
-                    </div>
                 </div>
             </div>
 
@@ -391,7 +397,13 @@
                 <label><input type="checkbox" id="chair1" checked onchange="updateSignatures()"> Dr. Abu Sufian</label>
                 <label><input type="checkbox" id="chair2" checked onchange="updateSignatures()"> Dr. Debasmita Saha</label>
                 <label><input type="checkbox" id="chair3" checked onchange="updateSignatures()"> Farhana Sultana</label>
-                <label><input type="checkbox" id="chair4" checked onchange="updateSignatures()"> Prof. Anirban Mukhopadhyay</label>
+            </div>
+
+            <div class="chair-selection" style="margin-top: 12px; border-top: 1px solid #ddd; padding-top: 12px;">
+                <strong>Data Source:</strong>
+                <div style="font-size: 10px; color: #475569; margin-bottom: 4px; line-height: 1.2;">Use the default 86 reviewers, or upload a new CSV to replace them.</div>
+                <input type="file" id="csvFileInput" accept=".csv" style="width: 100%; font-size: 10px; margin-bottom: 5px; cursor: pointer;" onchange="handleCSVUpload(event)">
+                <button class="btn" style="background: #64748b; padding: 6px; font-size: 10px; margin-bottom: 0;" onclick="resetToDefault()">Reload Default 86 Reviewers</button>
             </div>
         </div>
 
@@ -401,6 +413,7 @@
             <input type="text" id="newName" placeholder="Name">
             <input type="text" id="newRole" placeholder="Role (e.g. Reviewer)" value="Reviewer">
             <input type="text" id="newAffil" placeholder="Designation & Affiliation">
+            <input type="text" id="newPaperId" placeholder="Paper ID (Optional, e.g. 102)">
             <button class="btn btn-success" style="margin-bottom:0; padding: 8px;" onclick="addPresenter()">Add to List</button>
         </div>
 
@@ -412,12 +425,10 @@
     <div class="preview-area">
         <div class="certificate-wrapper" id="certificateNode">
             
-            <!-- Minimalistic Borders -->
             <div class="minimal-border-outer">
                 <div class="minimal-border-inner"></div>
             </div>
 
-            <!-- Abstract Tech / Geometric Background -->
             <div class="abstract-bg">
                 <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
                     <g stroke="var(--primary)" stroke-width="1.5" fill="none" opacity="0.25">
@@ -444,10 +455,10 @@
                 <div class="ref-number" id="certRef">Ref : CICBA-2026/RP - 1</div>
                 
                 <div class="logos" id="logoContainer">
-                    <img src="clogo.png" alt="CICBA">
-                    <img src="ulogo.png" alt="UGB">
-                    <img src="slogo.png" alt="Springer">
-                    <img src="ilogo.png" alt="IEEE">
+                    <img src="clogo.png" alt="CICBA" onerror="this.src='https://placehold.co/100x100/fcfcfc/0a2351?text=CICBA'">
+                    <img src="ulogo.png" alt="UGB" onerror="this.src='https://placehold.co/100x100/fcfcfc/c09d5c?text=UGB'">
+                    <img src="slogo.png" alt="Springer" onerror="this.src='https://placehold.co/100x100/fcfcfc/0a2351?text=Springer'">
+                    <img src="ilogo.png" alt="IEEE" onerror="this.src='https://placehold.co/100x100/fcfcfc/c09d5c?text=IEEE'">
                 </div>
 
                 <div class="text-block">
@@ -456,18 +467,22 @@
                     <div class="cert-title">Letter of Appreciation</div>
                     
                     <div class="presented-to">Presented to</div>
-                    <div class="name" id="certName">Prof. Bimal Kumar Roy</div>
+                    <div class="name" id="certName">Reviewer Name</div>
+                    
+                    <div class="presented-to" style="margin-bottom: 2px;">of</div>
                     
                     <div class="affiliation" id="certAffil">
-                        Padma Shri Awardee and Former Director, Indian Statistical Institute, Kolkata, India.
+                        University / Affiliation
                     </div>
 
                     <div class="for-presenting">for his/her valuable contribution as a</div>
                     
-                    <div class="paper-title" id="certRole">Chief Guest</div>
+                    <div class="paper-title" id="certRole">Reviewer</div>
+                    
+                    <div class="paper-id-display" id="certPaperId" style="display: none;"></div>
                     
                     <div class="conf-details">
-                        at the CICBA-2026 , held during September 10-12, 2026, organized by the Department of Computer Science, University of Gour Banga, Malda, West Bengal, India.
+                        of the CICBA-2026 , held during September 10-12, 2026, organized by the Department of Computer Science, University of Gour Banga, Malda, West Bengal, India.
                     </div>
                 </div>
 
@@ -484,31 +499,195 @@
     <script>
         function showMessage(msg) {
             const mbox = document.createElement('div');
-            mbox.id = 'toastMessage'; // Added ID so it hides on print
+            mbox.id = 'toastMessage';
             mbox.style.cssText = "position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#0a2351;color:#fff;padding:15px 25px;border-radius:8px;z-index:9999;font-family:sans-serif;box-shadow:0 4px 12px rgba(0,0,0,0.2);";
             mbox.innerText = msg;
             document.body.appendChild(mbox);
             setTimeout(() => mbox.remove(), 4000);
         }
 
-        // List pre-loaded with Reviewers
-        let persons = [
-            { id: "1", name: "Dr. Arijit Bhattacharya", role: "Reviewer", affil: "Assistant Professor, Gour Mahavidaylya, Malda, India." },
-            { id: "2", name: "Dr. Akhil Kumar Das", role: "Reviewer", affil: "Assistant Professor, Gour Mahavidaylaya, Malda, India." },
-            { id: "3", name: "Dr. Rahul Karmakar", role: "Reviewer", affil: "Assistant Professor, The University of Burdwan, Burdwan, India." },
-            { id: "4", name: "Dr. Tohida Rehman", role: "Reviewer", affil: "Assistant Professor, Jadavpur University, Kolkata, India." },
-            { id: "5", name: "Dr. Debaditya Barman", role: "Reviewer", affil: "Assistant Professor, Visva-Bharati, Santineketan, India." }
+        // Hardcoded Reviewer Database
+        const defaultPersons = [
+            { id: "1", name: "Jayeeta Chanda", affil: "B. P. Poddar Institute of Management and Technology Kolkata", paperId: "91, 89, 250", role: "Reviewer" },
+            { id: "2", name: "Md Sarfaraz Momin", affil: "Kaliachak college", paperId: "54 & 238", role: "Reviewer" },
+            { id: "3", name: "ASMITA", affil: "National Institute of Electronics and Information Technology, Patna", paperId: "14, 01, 66, 168", role: "Reviewer" },
+            { id: "4", name: "ASMITA", affil: "GLA University, Mathura", paperId: "14, 41, 48, 255", role: "Reviewer" },
+            { id: "5", name: "Dr. Ramit Kumar Roy", affil: "St. Xavier's College (Autonomous), Kolkata", paperId: "142, 143, 244", role: "Reviewer" },
+            { id: "6", name: "SUBHADIP DAS", affil: "Bengal College of Engineering and Technology", paperId: "1, 69, 171", role: "Reviewer" },
+            { id: "7", name: "Sanjay Nag", affil: "Associate Professor, Swami Vivekananda University, Kolkata", paperId: "10, 01, 72, 174", role: "Reviewer" },
+            { id: "8", name: "DR. PABITRA KUMAR DEY", affil: "PROFESSOR, DR. B. C. ROY ENGINEERING COLLEGE, DURGAPUR", paperId: "64, 68, 243", role: "Reviewer" },
+            { id: "9", name: "Anirban Nandy", affil: "Veer Surendra Sai University of Technology, Burla, Sambalpur", paperId: "1, 92, 193", role: "Reviewer" },
+            { id: "10", name: "SOURAB MANDAL", affil: "Research Scholar", paperId: "204, 233, and 239", role: "Reviewer" },
+            { id: "11", name: "Sayan Pal", affil: "The University of Burdwan", paperId: "4, 156, 157", role: "Reviewer" },
+            { id: "12", name: "Gangadhara Reddy Velagala", affil: "CVS Health", paperId: "20, 52, 15, 216", role: "Reviewer" },
+            { id: "13", name: "Amrita Namtirtha", affil: "Assistant Professor", paperId: "159, 160", role: "Reviewer" },
+            { id: "14", name: "Dr. Ankur Sisodia", affil: "Noida Institute of Engineering and Technology Greater Noida", paperId: "10, 91, 10, 253", role: "Reviewer" },
+            { id: "15", name: "Dr. Ranjit Ghoshal", affil: "St. Thomas' College of Engineering & Technology, Kolkata", paperId: "7, 9, 230", role: "Reviewer" },
+            { id: "16", name: "ARINDAM ROY", affil: "ASSISTANT PROFESSOR OF CSE AT ABACUS INSTITUTE OF ENGINEERING AND MANAGEMENT", paperId: "4, 21, 05, 153", role: "Reviewer" },
+            { id: "17", name: "Dr. Mubeen Ahmed Khan", affil: "NIMS University Rajasthan", paperId: "86, 88 and 249", role: "Reviewer" },
+            { id: "18", name: "Dr. Tohida Rehman", affil: "Jadavpur University", paperId: "108, 252", role: "Reviewer" },
+            { id: "19", name: "Shubha Chakraborty", affil: "The University of Burdwan", paperId: "105, 166, 168", role: "Reviewer" },
+            { id: "20", name: "Sima Ghosh", affil: "Govt. College of Engineering and Textile Technology, Serampore", paperId: "111, 114, 172", role: "Reviewer" },
+            { id: "21", name: "Dr. Pabitra Pal", affil: "Vidyasagar University", paperId: "30, 31, 236", role: "Reviewer" },
+            { id: "22", name: "Shrayasi Datta", affil: "Jalpaiguri Government Engineering College", paperId: "83, 85, 248", role: "Reviewer" },
+            { id: "23", name: "Madhuri Nallamothu", affil: "Dhanekula institute of Engineering and Technology", paperId: "16, 01, 61, 162", role: "Reviewer" },
+            { id: "24", name: "Siddhartha Chatterjee", affil: "College of Engineering and Management Kolaghat", paperId: "12, 13", role: "Reviewer" },
+            { id: "25", name: "Arka Dash", affil: "Kalyani Government Engineering College", paperId: "219, 220", role: "Reviewer" },
+            { id: "26", name: "Dr. Ashoktaru Pal", affil: "Future Institute of Engineering and Management", paperId: "16, 138, 139", role: "Reviewer" },
+            { id: "27", name: "Madhulika Gajjala", affil: "Tek Excel Inc, USA", paperId: "224", role: "Reviewer" },
+            { id: "28", name: "Ramesh Kumar Ramu", affil: "Independent Researcher", paperId: "43, 242, 250", role: "Reviewer" },
+            { id: "29", name: "Gaurav Pradhan", affil: "Sikkim Manipal Institute of Technology", paperId: "43, 217 and 218", role: "Reviewer" },
+            { id: "30", name: "Rajesh Balaji", affil: "Independent Researcher, Seattle, USA / Costco Wholesale Corporation, USA", paperId: "6, 29, 83", role: "Reviewer" },
+            { id: "31", name: "Raghavender Reddy Puchhakayala", affil: "IEEE", paperId: "7, 21, 49, 254", role: "Reviewer" },
+            { id: "32", name: "Dr.Anitha S Prasad", affil: "JSS science and technology university", paperId: "156, 147, 168", role: "Reviewer" },
+            { id: "33", name: "SRIRAMPRABHU RAJENDRAN", affil: "IEEE", paperId: "117, 254, 210", role: "Reviewer" },
+            { id: "34", name: "Amit Jaiswal", affil: "Hitachi Rail", paperId: "3", role: "Reviewer" },
+            { id: "35", name: "Juhi Patel", affil: "Assistant Professor", paperId: "12, 11, 27, 157", role: "Reviewer" },
+            { id: "36", name: "Debasish Jana", affil: "Heritage Institute of Technology", paperId: "144, 146, 175", role: "Reviewer" },
+            { id: "37", name: "Dr. Mritunjay Rai", affil: "Shri Ramswaroop Memorial University, Barabanki", paperId: "162, 170, 175, 178", role: "Reviewer" },
+            { id: "38", name: "Surajit Paul", affil: "Stitch Fix", paperId: "175", role: "Reviewer" },
+            { id: "39", name: "Vamsi Mulpuri", affil: "Google", paperId: "239, 125, 102", role: "Reviewer" },
+            { id: "40", name: "SHARMISTHA GAYEN", affil: "Swami Vivekananda University", paperId: "17, 21, 74, 202", role: "Reviewer" },
+            { id: "41", name: "RASHMI B H", affil: "CHRIST UNIVERSITY", paperId: "194, 91, 196", role: "Reviewer" },
+            { id: "42", name: "Trijit Arka Ghosh", affil: "Burdwan Institute of Management and Computer Science", paperId: "121, 172, 174", role: "Reviewer" },
+            { id: "43", name: "Asuri Rajendra", affil: "Covestro", paperId: "58, 120, 134, 163", role: "Reviewer" },
+            { id: "44", name: "Srikar Kompella", affil: "Northern Illinois University", paperId: "102, 122, 125", role: "Reviewer" },
+            { id: "45", name: "Prashant Devgade", affil: "CICBA 2026", paperId: "37, 71, 118", role: "Reviewer" },
+            { id: "46", name: "CHAITANYA TUMMA", affil: "PhD Research Scholar", paperId: "16, 163, 196", role: "Reviewer" },
+            { id: "47", name: "Subhasish Das", affil: "B. P. Poddar Institute of Management and Technology", paperId: "13, 41, 36, 224", role: "Reviewer" },
+            { id: "48", name: "Dr Kakali Datta", affil: "Visva-Bharati", paperId: "28, 159, 238", role: "Reviewer" },
+            { id: "49", name: "Srividhya S", affil: "SRMIST, KATTANKULATHUR", paperId: "121, 235, 29", role: "Reviewer" },
+            { id: "50", name: "Jhalak Dutta", affil: "Heritage Institute of Technology", paperId: "12, 21, 28, 133", role: "Reviewer" },
+            { id: "51", name: "Dr. Kartick Chandra Mondal", affil: "SRM University - AP, Amaravati", paperId: "16 and 233", role: "Reviewer" },
+            { id: "52", name: "Dr. Sanjukta Chakraborty", affil: "Techno International New Town", paperId: "80, 81, 247", role: "Reviewer" },
+            { id: "53", name: "Dr. Tahamina Yesmin", affil: "Adamas University", paperId: "44, 51, 240", role: "Reviewer" },
+            { id: "54", name: "Debapriya Banik", affil: "Icfai University Tripura", paperId: "14, 41, 46, 169", role: "Reviewer" },
+            { id: "55", name: "Dr. Md Nasir", affil: "Assistant Professor, SRM University AP", paperId: "176, 182, 190", role: "Reviewer" },
+            { id: "56", name: "Dipanjan Moitra", affil: "University of North Bengal", paperId: "117, 118, 150", role: "Reviewer" },
+            { id: "57", name: "Dr. Aniruddha Ghosh", affil: "University of Engineering and Management, Kolkata", paperId: "111, 114, 136", role: "Reviewer" },
+            { id: "58", name: "ANUPAM BAIDYA", affil: "Dr. B. C. Roy Engineering College, Durgapur", paperId: "72, 75 & 246", role: "Reviewer" },
+            { id: "59", name: "PRADIPTA PAL", affil: "Assistant Professor CSE, Amity School of Engineering and Technology, Amity University Jharkhand Ranchi", paperId: "140, 172, 194", role: "Reviewer" },
+            { id: "60", name: "Atikul Islam", affil: "Assistant Professor, Dept. of Computer Science of Engineering, Chhatrapati Shivaji Maharaj University, Navi Mumbai, Maharashtra 410221", paperId: "14, 91, 50, 177", role: "Reviewer" },
+            { id: "61", name: "Dr. Krishna Vijay Kumar Singh", affil: "Sikkim Manipal Institute of Technology", paperId: "3, 41, 61, 162", role: "Reviewer" },
+            { id: "62", name: "Chayan Ghosh", affil: "Jadavpur University", paperId: "168, 224, 225", role: "Reviewer" },
+            { id: "63", name: "SK ADOM ALI", affil: "Jadavpur University", paperId: "10, 62, 07, 211", role: "Reviewer" },
+            { id: "64", name: "Swagata Kundu", affil: "B P Poddar Institute of Management and Technology", paperId: "120, 169, 171", role: "Reviewer" },
+            { id: "65", name: "SOUMYA PAL", affil: "Department of Computer and System Sciences, Visva-Bharati University, Santiniketan, West Bengal, India", paperId: "110, 215, 216", role: "Reviewer" },
+            { id: "66", name: "Bala Yashwanth Reddy Thumma", affil: "Rivier University", paperId: "43, 54, 247", role: "Reviewer" },
+            { id: "67", name: "Leena Mandurkar", affil: "Asst. Professor", paperId: "1, 82, 186", role: "Reviewer" },
+            { id: "68", name: "Jyoti Prakash Singh", affil: "National Institrute of Technology Patna", paperId: "5, 6, 230", role: "Reviewer" },
+            { id: "69", name: "Sumana Chatterjee", affil: "Netaji Subhash Engineering College", paperId: "119, 163, 165", role: "Reviewer" },
+            { id: "70", name: "Sreeparna Guha", affil: "Institute of Engineering & Management, kolkata", paperId: "11, 81, 79, 180", role: "Reviewer" },
+            { id: "71", name: "Dr. Arijit Ghosal", affil: "St. Thomas' College of Engineering & Technology, Kolkata", paperId: "106, 159, 252", role: "Reviewer" },
+            { id: "72", name: "Dr. Arnab Sadhu", affil: "Vidyasagar University", paperId: "9, 175, 176", role: "Reviewer" },
+            { id: "73", name: "Ankita Goyal Agarwala", affil: "The Assam Royal Global University", paperId: "89, 91, 250", role: "Reviewer" },
+            { id: "74", name: "Surya Sarathi Das", affil: "Kalyani Government Engineering College", paperId: "1, 00, 105", role: "Reviewer" },
+            { id: "75", name: "Sumaiyya Fatima", affil: "General Motors", paperId: "238, 235, 222", role: "Reviewer" },
+            { id: "76", name: "Rahul Gupta", affil: "Amazon", paperId: "102, 122, 125", role: "Reviewer" },
+            { id: "77", name: "John david Raju Pesaramilli", affil: "Reveal Global Consulting", paperId: "108, 210, 239", role: "Reviewer" },
+            { id: "78", name: "GOPICHAND TALLURI", affil: "Independent AI Researcher", paperId: "15, 62, 05, 206", role: "Reviewer" },
+            { id: "79", name: "Tina Lekshmi Kanth", affil: "Illinois Institute of Technology", paperId: "1, 34, 136", role: "Reviewer" },
+            { id: "80", name: "Subhajit Bose", affil: "Salesian College (Autonomous), Siliguri Campus", paperId: "217, 218, 244", role: "Reviewer" },
+            { id: "81", name: "Mohit Upadhyay", affil: "Tech Mahindra", paperId: "237, 91, 125", role: "Reviewer" },
+            { id: "82", name: "Dr. Debasmita Saha", affil: "University of Gour Banga", paperId: "10, 91, 10, 20, 52, 06, 20, 70, 00, 000", role: "Reviewer" },
+            { id: "83", name: "Ashmeet Kaur", affil: "S.C.D. Government College", paperId: "10, 62, 10, 255", role: "Reviewer" },
+            { id: "84", name: "Firdaus Bashir", affil: "PSG INSTITUTE OF MANAGEMENT", paperId: "138 AND 139", role: "Reviewer" },
+            { id: "85", name: "Shekhar maheshwari", affil: "T-Mobile", paperId: "21, 82, 46, 254", role: "Reviewer" },
+            { id: "86", name: "Gowri Karrothu", affil: "Cognizant", paperId: "2, 91, 02, 122", role: "Reviewer" }
         ];
 
+        let persons = [...defaultPersons];
+
+        // Only keeping 3 signatures as requested
         const allChairs = [
             { name: "Dr. Abu Sufian", role: "Program Chair & Publication Chair", org: "CICBA-2026" },
             { name: "Dr. Debasmita Saha", role: "Convenor", org: "CICBA-2026" },
-            { name: "Farhana Sultana", role: "Organizing Secretary", org: "CICBA-2026" },
-            { name: "Prof. Anirban Mukhopadhyay", role: "Chair", org: "IEEE CIS Kolkata Chapter" }
+            { name: "Farhana Sultana", role: "Organizing Secretary", org: "CICBA-2026" }
         ];
 
         let currentIndex = 0;
-        let uploadedSigns = { 1: null, 2: null, 3: null, 4: null };
+        let uploadedSigns = { 1: null, 2: null, 3: null };
+
+        // --- CSV Upload Logic ---
+        function parseCSVRow(str) {
+            const arr = [];
+            let quote = false;
+            let col = '';
+            for (let i = 0; i < str.length; i++) {
+                if (str[i] === '"' && str[i+1] === '"') { col += '"'; i++; } 
+                else if (str[i] === '"') { quote = !quote; }
+                else if (str[i] === ',' && !quote) { arr.push(col); col = ''; }
+                else { col += str[i]; }
+            }
+            arr.push(col);
+            return arr;
+        }
+
+        function handleCSVUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const lines = text.split(/\r?\n/);
+                const newPersons = [];
+                let headerSkipped = false;
+                let idCounter = 1;
+                
+                for (let line of lines) {
+                    if (!line.trim()) continue;
+                    const row = parseCSVRow(line);
+                    
+                    if (!headerSkipped && line.toLowerCase().includes("name")) {
+                        headerSkipped = true;
+                        continue;
+                    }
+                    
+                    if (row.length >= 2) {
+                        let nameStr = row[1] ? row[1].trim() : "";
+                        let affilStr = row[2] ? row[2].trim() : "";
+                        let paperStr = row[3] ? row[3].trim() : "";
+                        
+                        // Fallback if no email column
+                        if(!nameStr && row[0]) {
+                            nameStr = row[0].trim();
+                            affilStr = row[1] ? row[1].trim() : "";
+                            paperStr = row[2] ? row[2].trim() : "";
+                        }
+
+                        if (nameStr) {
+                            newPersons.push({
+                                id: idCounter.toString(),
+                                name: nameStr,
+                                affil: affilStr,
+                                paperId: paperStr,
+                                role: "Reviewer"
+                            });
+                            idCounter++;
+                        }
+                    }
+                }
+                if (newPersons.length > 0) {
+                    persons = newPersons;
+                    showMessage(`Successfully loaded ${persons.length} reviewers from CSV!`);
+                    currentIndex = 0;
+                    loadList();
+                    renderCertificate(0);
+                } else {
+                    showMessage("Could not find valid data in the CSV.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function resetToDefault() {
+            persons = [...defaultPersons];
+            document.getElementById('csvFileInput').value = '';
+            showMessage("Restored the default 86 reviewers.");
+            currentIndex = 0;
+            loadList();
+            renderCertificate(0);
+        }
 
         function toggleUploadSection() {
             const isChecked = document.getElementById('useEsigns').checked;
@@ -527,6 +706,12 @@
         function loadList() {
             const list = document.getElementById('presenterList');
             list.innerHTML = '';
+            
+            if (persons.length === 0) {
+                list.innerHTML = '<div style="padding: 20px; text-align: center; color: #64748b; font-size: 12px; font-style: italic;">No reviewers loaded. Add one manually above.</div>';
+                return;
+            }
+
             persons.forEach((p, index) => {
                 const div = document.createElement('div');
                 div.className = `presenter-item ${index === currentIndex ? 'active' : ''}`;
@@ -540,22 +725,18 @@
             });
         }
 
-        // Generates signature HTML dynamically. 
-        // Skips adding the signature if the recipientName matches the chair's name.
         function generateSignatureHTML(recipientName) {
             let html = '';
             const useEsigns = document.getElementById('useEsigns') ? document.getElementById('useEsigns').checked : false;
 
-            [1, 2, 3, 4].forEach(num => {
+            [1, 2, 3].forEach(num => {
                 if(document.getElementById(`chair${num}`).checked) {
                     const chair = allChairs[num-1];
                     
-                    // Exclude signature if the chair is receiving the certificate
                     if (chair.name.toLowerCase() === (recipientName || "").toLowerCase()) {
-                        return; // Skip to the next chair
+                        return; // Exclude signature if they are the recipient
                     }
                     
-                    // Use uploaded file if available, otherwise fallback to local sign1.png
                     const signImageSrc = uploadedSigns[num] ? uploadedSigns[num] : `sign${num}.png`;
                     const signImageHTML = useEsigns ? `<img src="${signImageSrc}" class="e-sign" alt="${chair.name} Signature" onerror="this.style.opacity='0'">` : `<div style="height: 75px;"></div>`;
                     
@@ -575,12 +756,14 @@
         }
 
         function updateSignatures() {
-            const currentRecipient = persons[currentIndex] ? persons[currentIndex].name : "";
+            const currentRecipient = (persons.length > 0 && persons[currentIndex]) ? persons[currentIndex].name : "";
             const container = document.getElementById('signatureContainer');
             container.innerHTML = generateSignatureHTML(currentRecipient);
         }
 
         function renderCertificate(index) {
+            if (persons.length === 0) return;
+
             currentIndex = index;
             const p = persons[index];
             
@@ -588,8 +771,17 @@
             document.getElementById('certName').innerText = p.name;
             document.getElementById('certAffil').innerText = p.affil;
             document.getElementById('certRole').innerText = p.role;
+            
+            const paperIdNode = document.getElementById('certPaperId');
+            if (p.paperId && p.paperId.trim() !== '') {
+                paperIdNode.innerText = `for reviewing Paper ID(s): ${p.paperId}`;
+                paperIdNode.style.display = 'block';
+            } else {
+                paperIdNode.style.display = 'none';
+                paperIdNode.innerText = '';
+            }
 
-            updateSignatures(); // Updates signatures taking the current recipient into account
+            updateSignatures();
             loadList();
         }
 
@@ -604,25 +796,31 @@
             const name = document.getElementById('newName').value.trim();
             const affil = document.getElementById('newAffil').value.trim();
             const role = document.getElementById('newRole').value.trim();
+            const paperId = document.getElementById('newPaperId').value.trim();
             
             if(!id || !name || !affil || !role) {
-                showMessage("Please fill in all fields (including SL No).");
+                showMessage("Please fill in all fields (except Paper ID).");
                 return;
             }
             
-            persons.unshift({ id, name, affil, role });
+            persons.unshift({ id, name, affil, role, paperId });
             
             document.getElementById('newId').value = '';
             document.getElementById('newName').value = '';
             document.getElementById('newAffil').value = '';
-            // Role remains Reviewer automatically for the next entry
+            document.getElementById('newPaperId').value = '';
             
             loadList();
             renderCertificate(0);
         }
 
         function startBulkPrint() {
-            showMessage("Preparing certificates for printing...");
+            if(persons.length === 0) {
+                showMessage("No reviewers to print!");
+                return;
+            }
+
+            showMessage(`Preparing ${persons.length} certificates for printing...`);
             
             const bulkContainer = document.getElementById('bulkPrintContainer');
             bulkContainer.innerHTML = ''; 
@@ -639,10 +837,16 @@
                 clone.querySelector('.paper-title').innerText = p.role;
                 clone.querySelector('.affiliation').innerText = p.affil;
                 
-                // Dynamically build signatures for this specific print clone
+                const clonePaperId = clone.querySelector('.paper-id-display');
+                if (p.paperId && p.paperId.trim() !== '') {
+                    clonePaperId.innerText = `for reviewing Paper ID(s): ${p.paperId}`;
+                    clonePaperId.style.display = 'block';
+                } else {
+                    clonePaperId.style.display = 'none';
+                }
+                
                 clone.querySelector('.signature-block').innerHTML = generateSignatureHTML(p.name);
                 
-                // Carry over the current logo gap to the printed clones
                 const currentGap = document.getElementById('logoContainer').style.gap || '55px';
                 clone.querySelector('.logos').style.gap = currentGap;
                 
